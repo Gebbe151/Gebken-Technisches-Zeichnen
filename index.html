@@ -1,0 +1,1651 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="Vollständiger interaktiver Selbstlernkurs zu den Grundlagen des Technischen Zeichnens im Maschinenbau.">
+  <title>Technisches Zeichnen · Interaktiver Selbstlernkurs</title>
+  <style>
+    :root {
+      --ink:#172033; --muted:#566276; --paper:#fff; --canvas:#eef3f8;
+      --navy:#123b63; --blue:#146aa3; --cyan:#e8f6fc; --green:#176b4b;
+      --green-bg:#e7f6ee; --amber:#805400; --amber-bg:#fff4d8;
+      --red:#9c3030; --red-bg:#fff0f0; --violet:#5d3b8c; --violet-bg:#f4effb;
+      --line:#c7d2df; --focus:#ffbf47; --radius:16px; --shadow:0 8px 24px rgba(18,59,99,.11);
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:var(--canvas); font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; line-height:1.58; }
+    button,input,select,textarea { font:inherit; }
+    button,a,input,select,textarea,summary { outline-offset:3px; }
+    :focus-visible { outline:3px solid var(--focus); }
+    .skip { position:absolute; left:-9999px; top:8px; padding:10px 14px; background:#fff; color:var(--ink); z-index:50; }
+    .skip:focus { left:8px; }
+    header { background:linear-gradient(120deg,#102f4e,#1f6fb2); color:#fff; padding:28px clamp(18px,4vw,56px) 24px; }
+    header h1 { margin:0 0 6px; font-size:clamp(1.75rem,4vw,2.7rem); line-height:1.12; }
+    header p { margin:0; max-width:980px; font-size:1.06rem; }
+    .topbar { position:sticky; top:0; z-index:20; background:rgba(255,255,255,.98); border-bottom:1px solid var(--line); padding:10px clamp(12px,3vw,40px); box-shadow:0 3px 12px rgba(15,23,42,.08); }
+    .progress-row { display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center; }
+    progress { width:100%; height:14px; accent-color:var(--green); }
+    .top-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+    .nav-button { border:1px solid #93a8bd; border-radius:999px; padding:6px 11px; background:#fff; color:var(--navy); cursor:pointer; font-weight:700; }
+    .nav-button[aria-current="page"] { background:var(--navy); color:#fff; border-color:var(--navy); }
+    main { max-width:1160px; margin:24px auto 72px; padding:0 16px; }
+    .module { display:none; background:var(--paper); border-radius:var(--radius); box-shadow:var(--shadow); padding:clamp(20px,4vw,42px); }
+    .module.active { display:block; }
+    .eyebrow { margin:0 0 8px; color:var(--blue); font-weight:850; text-transform:uppercase; letter-spacing:.08em; font-size:.78rem; }
+    h2 { margin:0 0 12px; font-size:clamp(1.5rem,3vw,2.15rem); line-height:1.2; }
+    h3 { margin-top:30px; color:var(--navy); line-height:1.25; }
+    h4 { margin:0 0 7px; color:var(--navy); }
+    .lead { font-size:1.12rem; max-width:950px; }
+    .grid-2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+    .grid-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+    .card { border:1px solid var(--line); border-radius:12px; padding:17px; background:#fff; }
+    .card h3,.card h4 { margin-top:0; }
+    .info { border-left:5px solid var(--blue); background:#eef7fc; padding:14px 16px; margin:18px 0; }
+    .success { border-left-color:var(--green); background:var(--green-bg); }
+    .warning { border-left-color:#d29100; background:var(--amber-bg); }
+    .advanced { border-left-color:var(--violet); background:var(--violet-bg); }
+    .source { color:var(--muted); font-size:.9rem; }
+    .source strong { color:#3b475a; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; border:0; border-radius:10px; padding:10px 15px; background:var(--blue); color:#fff; cursor:pointer; font-weight:750; text-decoration:none; }
+    .btn:hover { filter:brightness(.94); }
+    .btn.secondary { background:#e8eef5; color:var(--navy); border:1px solid #a9b9ca; }
+    .btn.success { background:var(--green); }
+    .btn.danger { background:var(--red); }
+    .module-actions { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; padding-top:28px; margin-top:30px; border-top:1px solid var(--line); }
+    .quiz { margin:16px 0; padding:16px; border:1px solid var(--line); border-radius:12px; background:#fbfdff; }
+    .quiz legend { font-weight:780; padding:0 5px; }
+    .quiz label { display:block; margin:8px 0; padding:7px 8px; border-radius:8px; }
+    .quiz label:hover { background:#edf4fa; }
+    .quiz.answered-ok { border-color:#64a789; background:#f5fcf8; }
+    .quiz.answered-bad { border-color:#d69797; background:#fff8f8; }
+    .feedback { margin-top:10px; min-height:1.6em; font-weight:680; }
+    .feedback.ok { color:var(--green); }
+    .feedback.bad { color:var(--red); }
+    .section-score { display:inline-block; margin-left:10px; padding:8px 12px; border-radius:9px; background:#edf4fa; font-weight:750; }
+    details { border:1px solid var(--line); border-radius:10px; padding:10px 13px; margin:12px 0; background:#fff; }
+    summary { cursor:pointer; font-weight:760; color:var(--navy); }
+    details.hint { border-left:5px solid #d29100; background:#fffbef; }
+    details.solution { border-left:5px solid var(--green); background:#f4fbf7; }
+    .diagram-wrap { overflow-x:auto; border:1px solid var(--line); border-radius:14px; padding:14px; background:#fff; margin:14px 0; }
+    svg { max-width:100%; height:auto; }
+    .hotspots { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+    .hotspots button { border:1px solid #93a8bd; background:#f6f9fc; color:var(--navy); border-radius:9px; padding:8px 10px; cursor:pointer; }
+    .hotspots button.active { background:var(--navy); color:#fff; }
+    .hotspot-info { min-height:4.5em; padding:12px; border-radius:10px; background:var(--cyan); }
+    .scale-form { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; align-items:end; }
+    input,select,textarea { width:100%; border:1px solid #8097ae; border-radius:8px; padding:9px 10px; background:#fff; color:var(--ink); }
+    textarea { min-height:105px; resize:vertical; }
+    input[type="radio"],input[type="checkbox"] { width:auto; }
+    .result { margin-top:12px; padding:12px; border-radius:10px; background:var(--green-bg); font-weight:700; }
+    .legend-line { width:110px; display:inline-block; vertical-align:middle; margin-right:10px; }
+    .line-wide { border-top:4px solid #111; }
+    .line-thin { border-top:1.5px solid #111; }
+    .line-hidden { border-top:2px dashed #111; }
+    .line-center { height:2px; background:repeating-linear-gradient(90deg,#111 0 24px,transparent 24px 30px,#111 30px 34px,transparent 34px 40px); }
+    .line-double { height:2px; background:repeating-linear-gradient(90deg,#111 0 22px,transparent 22px 28px,#111 28px 32px,transparent 32px 38px,#111 38px 42px,transparent 42px 48px); }
+    .toggle-row { display:flex; flex-wrap:wrap; gap:12px; margin:12px 0; }
+    .toggle-row label { display:inline-flex; align-items:center; gap:7px; font-weight:650; }
+    .step-list { counter-reset:steps; padding:0; list-style:none; }
+    .step-list li { counter-increment:steps; margin:13px 0; padding-left:44px; position:relative; }
+    .step-list li::before { content:counter(steps); position:absolute; left:0; top:-2px; width:30px; height:30px; border-radius:50%; display:grid; place-items:center; background:var(--navy); color:#fff; font-weight:800; }
+    .checklist label { display:flex; gap:9px; margin:9px 0; }
+    .checklist input { margin-top:5px; }
+    table { width:100%; border-collapse:collapse; margin:16px 0; }
+    th,td { border:1px solid var(--line); padding:10px; text-align:left; vertical-align:top; }
+    th { background:var(--navy); color:#fff; }
+    .score-box { font-size:1.08rem; padding:16px; border-radius:12px; background:#eef5fb; margin:16px 0; }
+    .score-box strong.big { display:block; font-size:2rem; color:var(--navy); }
+    .tag { display:inline-block; padding:3px 8px; border-radius:999px; background:#e6eef7; color:var(--navy); font-size:.82rem; font-weight:750; }
+    .tag.required { background:#dceef8; color:#084d78; }
+    .tag.optional { background:#f0e8fa; color:#573282; }
+    .tag.source-tag { background:#fff0c8; color:#6b4700; }
+    .task { border:2px solid #b5c7d8; border-radius:14px; margin:22px 0; overflow:hidden; background:#fbfdff; }
+    .task-head { padding:11px 15px; display:flex; align-items:center; justify-content:space-between; gap:12px; background:#eaf2f8; }
+    .task-body { padding:16px; }
+    .task-body > :first-child { margin-top:0; }
+    .task-body > :last-child { margin-bottom:0; }
+    .source-task { border-color:#dfbd60; }
+    .source-task .task-head { background:#fff5d9; }
+    .answer-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+    .microcopy { color:var(--muted); font-size:.9rem; }
+    .callout-title { font-weight:800; color:var(--navy); }
+    .process { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin:18px 0; }
+    .process div { position:relative; padding:14px; border-radius:10px; background:#edf4fa; text-align:center; font-weight:750; }
+    .process div:not(:last-child)::after { content:"→"; position:absolute; right:-10px; top:50%; transform:translate(50%,-50%); color:var(--blue); font-size:1.35rem; z-index:2; }
+    .level-table td:first-child { width:22%; font-weight:750; }
+    footer { max-width:1160px; margin:0 auto 40px; padding:0 16px; color:var(--muted); font-size:.9rem; }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    @media (max-width:780px) {
+      .grid-2,.grid-3,.scale-form,.answer-grid,.process { grid-template-columns:1fr; }
+      .process div:not(:last-child)::after { content:"↓"; right:50%; top:auto; bottom:-17px; }
+      .progress-row { grid-template-columns:1fr auto; }
+      .progress-row strong { grid-column:1/-1; }
+      .top-actions { max-height:146px; overflow-y:auto; }
+    }
+    @media print {
+      body { background:#fff; font-size:10pt; }
+      header,.topbar,.module-actions,.btn,.hotspots { display:none !important; }
+      main { max-width:none; margin:0; padding:0; }
+      .module { display:block !important; box-shadow:none; border-radius:0; page-break-after:always; padding:12mm; }
+      details { break-inside:avoid; }
+      details:not([open]) > *:not(summary) { display:block; }
+      .quiz,.task,.diagram-wrap,table { break-inside:avoid; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Zum Inhalt springen</a>
+  <header>
+    <h1>Vom Bauteil zur Fertigung</h1>
+    <p>Vollständiger interaktiver Selbstlernkurs: Technische Zeichnungen lesen, verstehen, prüfen und erstellen</p>
+  </header>
+
+  <div class="topbar" aria-label="Kursnavigation">
+    <div class="progress-row">
+      <strong id="progressText">0 Module abgeschlossen</strong>
+      <progress id="progressBar" max="9" value="0">Lernfortschritt</progress>
+      <button class="nav-button" id="resetCourse" type="button">Zurücksetzen</button>
+    </div>
+    <div class="top-actions" id="moduleNav"></div>
+  </div>
+
+  <main id="main">
+    <section class="module active" id="modul-1" data-title="Start">
+      <p class="eyebrow">Modul 1 · Orientierung und Diagnose</p>
+      <h2>Warum technische Zeichnungen eindeutig sein müssen</h2>
+      <p class="lead">Eine Werkstatt erhält eine hübsche 3D-Abbildung eines Halters – aber keine eindeutigen Ansichten, keine vollständigen Maße und keinen Werkstoff. Kann das Bauteil trotzdem sicher hergestellt und geprüft werden? Nein: Für die Fertigung zählt nicht, ob eine Darstellung anschaulich aussieht, sondern ob alle notwendigen Informationen eindeutig sind.</p>
+      <div class="info warning"><strong>Leitfrage:</strong> Welche Informationen benötigt eine technische Zeichnung, damit eine andere Person ein Bauteil ohne Rückfrage richtig fertigen und prüfen kann?</div>
+
+      <h3>So arbeitet ihr mit diesem Kurs</h3>
+      <div class="process" aria-label="Lernschritte">
+        <div>1 · Informieren</div><div>2 · Nachschlagen</div><div>3 · Üben</div><div>4 · Prüfen</div>
+      </div>
+      <p>Bearbeitet die Module der Reihe nach. Die blauen Aufgaben sind Pflicht. Violette Transferaufgaben sind anspruchsvoller. Gelb markierte Rechercheaufträge benötigen eines der beiden Nachschlagewerke. Öffnet Tipps erst nach einem eigenen Versuch und die vollständige Lösung zur Selbstkontrolle.</p>
+
+      <h3>Diese beiden Quellen braucht ihr</h3>
+      <div class="grid-2">
+        <div class="card"><span class="tag source-tag">Quelle 1</span><h4>1. Infos Technisches Zeichnen</h4><p>Kompakter Überblick zu Zeichnungsarten, Darstellungsregeln, Ansichten, Bemaßung, Schnitten, Oberflächen, Gewinden und Verbindungselementen.</p></div>
+        <div class="card"><span class="tag source-tag">Quelle 2</span><h4>2. TK Metall- und Bautechnik TB</h4><p>Tabellenwerk zum gezielten Nachschlagen von Formaten, Maßstäben, Linien, Normteilen, Gewinden, Bohrungen und weiteren Tabellenwerten. Seiten können je nach Ausgabe abweichen – nutzt Inhalts- und Stichwortverzeichnis.</p></div>
+      </div>
+      <div class="info"><strong>Wichtig:</strong> Alle Informationen, die ihr zum Erlernen der Grundlagen benötigt, findet ihr direkt in diesem Kurs. Die beiden oben genannten Dateien nutzt ihr ergänzend für gezielte Recherche- und Nachschlageaufträge.</div>
+
+      <h3>Ich-kann-Ziele</h3>
+      <div class="grid-2">
+        <div class="card">Ich kann Zeichnungsarten, Schriftfeld, Format und Maßstab erläutern.</div>
+        <div class="card">Ich kann Linienarten erkennen und funktionsgerecht einsetzen.</div>
+        <div class="card">Ich kann Bauteile in Ansichten nach Projektionsmethode 1 darstellen.</div>
+        <div class="card">Ich kann räumliche Darstellungen und Schnitte lesen.</div>
+        <div class="card">Ich kann Maße vollständig, eindeutig und fertigungsgerecht eintragen.</div>
+        <div class="card">Ich kann grundlegende Oberflächen-, Toleranz- und Gewindeangaben einordnen.</div>
+        <div class="card">Ich kann eine Zeichnung systematisch lesen und typische Fehler begründen.</div>
+        <div class="card">Ich kann eine einfache Freihandskizze erstellen und mit einer Prüfliste verbessern.</div>
+      </div>
+
+      <h3>Eingangscheck ohne Benotung</h3>
+      <fieldset class="quiz" data-correct="b" data-explain="Eine Fertigungszeichnung übermittelt Form, Maße, Werkstoff und weitere notwendige Fertigungsangaben eindeutig.">
+        <legend>1. Wozu dient eine Fertigungszeichnung hauptsächlich?</legend>
+        <label><input type="radio" name="q1a" value="a"> Sie soll das Bauteil möglichst realistisch aussehen lassen.</label>
+        <label><input type="radio" name="q1a" value="b"> Sie liefert die notwendigen Informationen für Herstellung und Prüfung.</label>
+        <label><input type="radio" name="q1a" value="c"> Sie ersetzt jede Arbeitsplanung in der Werkstatt.</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <fieldset class="quiz" data-correct="c" data-explain="Bei Maßstab 1:2 wird die Darstellung halb so groß; die Maßzahl beschreibt weiterhin das wirkliche Bauteilmaß.">
+        <legend>2. Ein Bauteil ist 80 mm lang und wird im Maßstab 1:2 gezeichnet. Wie lang ist die Darstellung?</legend>
+        <label><input type="radio" name="q1b" value="a"> 160 mm</label>
+        <label><input type="radio" name="q1b" value="b"> 80 mm</label>
+        <label><input type="radio" name="q1b" value="c"> 40 mm</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <fieldset class="quiz" data-correct="a" data-explain="Sichtbare Körperkanten und Umrisse werden als breite Volllinien dargestellt.">
+        <legend>3. Welche Linie kennzeichnet sichtbare Körperkanten?</legend>
+        <label><input type="radio" name="q1c" value="a"> Breite Volllinie</label>
+        <label><input type="radio" name="q1c" value="b"> Schmale Strichlinie</label>
+        <label><input type="radio" name="q1c" value="c"> Schmale Strichpunktlinie</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <button class="btn" type="button" data-grade-section>Antworten prüfen</button><span class="section-score" aria-live="polite"></span>
+      <p class="source"><strong>Zum Nachschlagen:</strong> Infos Technisches Zeichnen, PDF-S. 1 / Buch-S. 484–485.</p>
+      <div class="module-actions"><span></span><button class="btn success complete" type="button">Modul abschließen und weiter</button></div>
+    </section>
+
+    <section class="module" id="modul-2" data-title="Zeichnung">
+      <p class="eyebrow">Modul 2 · Technische Kommunikation und Dokumente</p>
+      <h2>Eine technische Zeichnung entschlüsseln</h2>
+      <p class="lead">Technische Kommunikation versorgt Entwicklung, Fertigung, Montage, Prüfung und Kunden zum richtigen Zeitpunkt mit fehlerfreien Informationen. Zeichnung, Stückliste und weitere Dokumente bilden deshalb ein zusammenhängendes Informationssystem.</p>
+
+      <h3>Vom Auftrag zum herstellbaren Produkt</h3>
+      <div class="process"><div>Planung<br><small>Auftrag und Anforderungen</small></div><div>Entwurf<br><small>Ideen und Varianten</small></div><div>Realisierung<br><small>CAD und Ausarbeitung</small></div><div>Dokumentation<br><small>Zeichnung und Stückliste</small></div></div>
+      <div class="info"><strong>Rückkopplung:</strong> Tritt ein Fehler auf, wird nicht einfach weitergearbeitet. Der betroffene Schritt wird verbessert und die Folgearbeit erneut geprüft.</div>
+
+      <h3>Zeichnungsarten sicher unterscheiden</h3>
+      <div class="grid-3">
+        <div class="card"><h4>Einzelteil- / Fertigungszeichnung</h4><p>Stellt ein Teil vollständig dar. Enthält die für Herstellung und Prüfung nötigen Angaben: Geometrie, Maße, Werkstoff und – je nach Aufgabe – Toleranzen, Oberflächen oder Verfahren.</p></div>
+        <div class="card"><h4>Zusammenbauzeichnung</h4><p>Zeigt Lage und Zusammenwirken mehrerer Teile. Positionsnummern verbinden die Darstellung mit der Stückliste.</p></div>
+        <div class="card"><h4>Stückliste</h4><p>Ordnet Position, Menge, Benennung, Werkstoff beziehungsweise Norm- oder Kaufteilangaben zu. Erst zusammen mit Zeichnungen wird das Produkt vollständig dokumentiert.</p></div>
+      </div>
+
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 900 470" role="img" aria-labelledby="drawingTitle drawingDesc">
+          <title id="drawingTitle">Vereinfachte Fertigungszeichnung einer Grundplatte</title>
+          <desc id="drawingDesc">Zeichenblatt mit Rahmen, Vorderansicht einer Platte mit Bohrung, Bemaßung und Schriftfeld.</desc>
+          <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="#111"></path></marker></defs>
+          <rect x="12" y="12" width="876" height="446" fill="#fff" stroke="#111" stroke-width="2"></rect>
+          <rect x="34" y="28" width="834" height="408" fill="none" stroke="#111"></rect>
+          <g id="draw-body">
+            <rect x="170" y="105" width="360" height="180" fill="none" stroke="#111" stroke-width="4"></rect>
+            <circle cx="285" cy="195" r="36" fill="none" stroke="#111" stroke-width="4"></circle>
+            <line x1="232" y1="195" x2="338" y2="195" stroke="#111" stroke-width="1.4" stroke-dasharray="24 6 4 6"></line>
+            <line x1="285" y1="142" x2="285" y2="248" stroke="#111" stroke-width="1.4" stroke-dasharray="24 6 4 6"></line>
+          </g>
+          <g id="draw-dims" stroke="#111" stroke-width="1.3" fill="none">
+            <line x1="170" y1="302" x2="170" y2="344"></line><line x1="530" y1="302" x2="530" y2="344"></line>
+            <line x1="170" y1="330" x2="530" y2="330" marker-start="url(#arrow)" marker-end="url(#arrow)"></line>
+            <text x="338" y="322" fill="#111" stroke="none" font-size="19">80</text>
+            <line x1="566" y1="105" x2="610" y2="105"></line><line x1="566" y1="285" x2="610" y2="285"></line>
+            <line x1="594" y1="105" x2="594" y2="285" marker-start="url(#arrow)" marker-end="url(#arrow)"></line>
+            <text x="602" y="202" fill="#111" stroke="none" font-size="19">40</text>
+            <line x1="311" y1="169" x2="365" y2="125" marker-start="url(#arrow)"></line><text x="371" y="120" fill="#111" stroke="none" font-size="19">⌀16</text>
+          </g>
+          <g id="draw-titleblock">
+            <rect x="555" y="368" width="313" height="68" fill="none" stroke="#111" stroke-width="1.4"></rect>
+            <line x1="555" y1="400" x2="868" y2="400" stroke="#111"></line><line x1="716" y1="368" x2="716" y2="436" stroke="#111"></line>
+            <text x="566" y="390" font-size="15">Grundplatte</text><text x="727" y="390" font-size="15">Maßstab 1:1</text>
+            <text x="566" y="423" font-size="14">Werkstoff: EN AW-...</text><text x="727" y="423" font-size="14">Einheit: mm</text>
+          </g>
+          <text x="52" y="58" font-size="15" fill="#566276">Zeichnungsrahmen</text>
+        </svg>
+      </div>
+      <div class="hotspots" aria-label="Bestandteile auswählen">
+        <button type="button" data-hotspot="body">Ansicht</button><button type="button" data-hotspot="dims">Bemaßung</button><button type="button" data-hotspot="title">Schriftfeld</button><button type="button" data-hotspot="frame">Rahmen</button>
+      </div>
+      <div class="hotspot-info" id="hotspotInfo" aria-live="polite">Wählt einen Bestandteil aus.</div>
+
+      <h3>Zeichenblatt, Rahmen und Schriftfeld</h3>
+      <p>Die Blattgröße richtet sich nach Anzahl und Größe der notwendigen Ansichten sowie nach dem gewählten Maßstab. Aus dem Ausgangsformat A0 entstehen die kleineren A-Formate jeweils durch Halbieren der langen Seite. A4 wird häufig hochkant, größere Formate meist quer verwendet. Der Rahmen begrenzt die Zeichenfläche; das Schriftfeld liegt in Leserichtung rechts unten.</p>
+      <table>
+        <thead><tr><th>Schriftfeldangabe</th><th>Wozu braucht ihr sie?</th></tr></thead>
+        <tbody><tr><td>Benennung / Zeichnungsnummer</td><td>Dokument und Bauteil eindeutig zuordnen.</td></tr><tr><td>Werkstoff / Halbzeug</td><td>Material und Ausgangsform festlegen.</td></tr><tr><td>Maßstab</td><td>Größe der Darstellung gegenüber der Wirklichkeit erkennen.</td></tr><tr><td>Ersteller, Datum, Änderung</td><td>Verantwortung und Versionsstand nachvollziehen.</td></tr><tr><td>Zusatzangaben</td><td>Zum Beispiel Allgemeintoleranz oder allgemeine Oberflächenangabe, falls für die Aufgabe gefordert.</td></tr></tbody>
+      </table>
+
+      <h3>Systematische Lesereihenfolge</h3>
+      <ol class="step-list">
+        <li><strong>Dokument bestimmen:</strong> Einzelteil, Zusammenbau oder Übersicht?</li>
+        <li><strong>Schriftfeld lesen:</strong> Benennung, Werkstoff, Maßstab und Änderungsstand erfassen.</li>
+        <li><strong>Ansichten verbinden:</strong> Hauptansicht, sichtbare und verdeckte Formen erkennen.</li>
+        <li><strong>Maße und Zeichen ordnen:</strong> Grund-, Form- und Lagemaße sowie Symbole auswerten.</li>
+        <li><strong>Fertigbarkeit prüfen:</strong> Fehlt etwas, ist etwas widersprüchlich oder nur doppelt angegeben?</li>
+      </ol>
+
+      <div class="task source-task">
+        <div class="task-head"><strong>Rechercheauftrag 2A · Zeichnungsarten</strong><span class="tag required">Pflicht</span></div>
+        <div class="task-body">
+          <p><strong>Quelle:</strong> „1. Infos Technisches Zeichnen“, PDF-S. 1 / Buch-S. 484–485.</p>
+          <ol><li>Notiert je ein Merkmal von Teilzeichnung, Gruppenzeichnung und Gesamtzeichnung.</li><li>Erklärt, wie Positionsnummer und Stückliste zusammenwirken.</li><li>Nennt drei Angaben, die ihr in einer Stückliste erwartet.</li></ol>
+          <label for="work2a">Eure Notizen</label><textarea id="work2a" data-save="work2a" placeholder="Schreibt in eigenen Worten …"></textarea>
+          <details class="hint"><summary>Tipp 1</summary>Achtet darauf, ob ein einzelnes Bauteil, eine Baugruppe oder das gesamte Erzeugnis dargestellt wird.</details>
+          <details class="solution"><summary>Vollständige Lösung</summary><p>Eine Teil- beziehungsweise Einzelteilzeichnung beschreibt ein einzelnes Bauteil vollständig. Eine Gruppenzeichnung zeigt zusammengehörige Teile oder eine Baugruppe. Eine Gesamtzeichnung zeigt das ganze Erzeugnis beziehungsweise seine Hauptgruppen. Positionsnummern verweisen von der Zeichnung auf die passende Zeile der Stückliste. Typische Stücklistenangaben sind Positionsnummer, Menge, Benennung sowie Werkstoff, Norm- oder Zeichnungsnummer.</p></details>
+        </div>
+      </div>
+
+      <fieldset class="quiz" data-correct="b" data-explain="Eine Zusammenbauzeichnung zeigt die Lage und das Zusammenwirken der Teile; Details liefert die Stückliste.">
+        <legend>Welche Aussage beschreibt eine Zusammenbauzeichnung am besten?</legend>
+        <label><input type="radio" name="q2a" value="a"> Sie enthält nur ein einzelnes Bauteil ohne Positionsnummern.</label>
+        <label><input type="radio" name="q2a" value="b"> Sie zeigt Teile in ihrer Einbaulage und verbindet sie über Positionsnummern mit der Stückliste.</label>
+        <label><input type="radio" name="q2a" value="c"> Sie ersetzt jede Fertigungszeichnung der Einzelteile.</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <fieldset class="quiz" data-correct="c" data-explain="Das Schriftfeld enthält zentrale Identifikations- und Zeichnungsangaben und liegt in Leserichtung rechts unten.">
+        <legend>Welche Gruppe gehört typischerweise in das Schriftfeld?</legend>
+        <label><input type="radio" name="q2b" value="a"> Kaufpreis, Werbetext, Kundenbewertung</label>
+        <label><input type="radio" name="q2b" value="b"> Nur die Anzahl gezeichneter Linien</label>
+        <label><input type="radio" name="q2b" value="c"> Benennung, Werkstoff, Maßstab und Zeichnungsnummer</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <button class="btn" type="button" data-grade-section>Wissen prüfen</button><span class="section-score" aria-live="polite"></span>
+      <p class="source"><strong>Zum Nachschlagen:</strong> Infos Technisches Zeichnen, PDF-S. 1–2 / Buch-S. 484–487.</p>
+      <div class="module-actions"><button class="btn secondary prev" type="button">Zurück</button><button class="btn success complete" type="button">Modul abschließen und weiter</button></div>
+    </section>
+
+    <section class="module" id="modul-3" data-title="Maßstab">
+      <p class="eyebrow">Modul 3 · Formate, Maßstab und Freihandtechnik</p>
+      <h2>Zwischen Wirklichkeit, Darstellung und Skizze unterscheiden</h2>
+      <p>Im 3D-CAD wird ein Bauteil grundsätzlich in natürlicher Größe modelliert. Auf einem Zeichenblatt kann die Darstellung verkleinert oder vergrößert werden. <strong>Die eingetragene Maßzahl gibt trotzdem immer das wirkliche Bauteilmaß an.</strong></p>
+      <table>
+        <thead><tr><th>Maßstab</th><th>Bedeutung</th><th>Beispiel bei 80 mm Wirkmaß</th></tr></thead>
+        <tbody><tr><td>1:1</td><td>natürliche Größe</td><td>80 mm Darstellung</td></tr><tr><td>1:2</td><td>Verkleinerung</td><td>40 mm Darstellung</td></tr><tr><td>2:1</td><td>Vergrößerung</td><td>160 mm Darstellung</td></tr></tbody>
+      </table>
+      <div class="info"><strong>Rechenregel:</strong> Zeichnungsmaß = Wirkmaß × erster Maßstabswert ÷ zweiter Maßstabswert. Beispiel 1:5: 80 mm × 1 ÷ 5 = 16 mm.</div>
+      <h3>Maßstabsrechner</h3>
+      <div class="scale-form">
+        <label>Wirkmaß in mm<input id="realLength" type="number" min="0" step="0.1" value="80"></label>
+        <label>Maßstab<select id="scaleSelect"><option>1:1</option><option>1:2</option><option>1:5</option><option>1:10</option><option>2:1</option><option>5:1</option></select></label>
+        <button class="btn" id="calcScale" type="button">Darstellung berechnen</button>
+      </div>
+      <div class="result" id="scaleResult" aria-live="polite">80 mm im Maßstab 1:1 werden 80 mm groß dargestellt.</div>
+
+      <h3>Freihandskizze, Freihandzeichnung und technische Zeichnung</h3>
+      <table>
+        <thead><tr><th>Darstellung</th><th>Kennzeichen</th><th>Einsatz</th></tr></thead>
+        <tbody>
+          <tr><td>Freihandskizze</td><td>Ohne Hilfsmittel; geometrische Verhältnisse erkennbar, nicht zwingend maßstäblich.</td><td>Idee, Diskussion, schnelle Maßaufnahme.</td></tr>
+          <tr><td>Freihandzeichnung</td><td>Ohne Zeichenhilfen, aber sauber, regelgerecht und annähernd maßstäblich.</td><td>Vorlage für die technische Zeichnung, Erklärung eines Zusammenhangs.</td></tr>
+          <tr><td>Technische Zeichnung von Hand / CAD</td><td>Maßstäblich, sauber, vollständig; vereinbarte Zeichenregeln.</td><td>Dokumentation, Fertigung und Prüfung.</td></tr>
+        </tbody>
+      </table>
+      <div class="grid-2">
+        <div class="card"><h4>Gerade Linien</h4><ul><li>Bewegung aus dem ganzen Arm; Handgelenk möglichst ruhig.</li><li>Start und Ende markieren, bei langen Linien Hilfspunkte setzen.</li><li>Blatt drehen, sodass die Linie kontrolliert zum Körper gezogen werden kann.</li><li>Parallele Kanten paarweise zeichnen.</li></ul></div>
+        <div class="card"><h4>Kreise und Symmetrie</h4><ul><li>Zuerst ein Mittellinienkreuz zeichnen.</li><li>Radius beziehungsweise Durchmesser auf den Achsen markieren.</li><li>Kreis aus mehreren kontrollierten Bögen aufbauen und das Blatt drehen.</li><li>Alternative: Kreis in ein Hilfsquadrat einpassen.</li></ul></div>
+      </div>
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 860 270" role="img" aria-labelledby="freeTitle freeDesc">
+          <title id="freeTitle">Arbeitsschritte für einen Kreis als Freihandzeichnung</title><desc id="freeDesc">Mittellinienkreuz, markierte Radien, Hilfsquadrat und fertig ausgeführter Kreis.</desc>
+          <g transform="translate(70,45)" stroke="#111" fill="none">
+            <text x="28" y="-12" fill="#123b63" stroke="none" font-weight="700">1 · Achsen</text>
+            <line x1="0" y1="75" x2="150" y2="75" stroke-width="1.5" stroke-dasharray="20 5 3 5"></line><line x1="75" y1="0" x2="75" y2="150" stroke-width="1.5" stroke-dasharray="20 5 3 5"></line>
+          </g>
+          <g transform="translate(285,45)" stroke="#111" fill="none">
+            <text x="8" y="-12" fill="#123b63" stroke="none" font-weight="700">2 · Durchmesser markieren</text>
+            <line x1="0" y1="75" x2="150" y2="75" stroke-width="1.5" stroke-dasharray="20 5 3 5"></line><line x1="75" y1="0" x2="75" y2="150" stroke-width="1.5" stroke-dasharray="20 5 3 5"></line>
+            <circle cx="20" cy="75" r="4" fill="#1f6fb2"></circle><circle cx="130" cy="75" r="4" fill="#1f6fb2"></circle><circle cx="75" cy="20" r="4" fill="#1f6fb2"></circle><circle cx="75" cy="130" r="4" fill="#1f6fb2"></circle>
+          </g>
+          <g transform="translate(535,45)" stroke="#111" fill="none">
+            <text x="14" y="-12" fill="#123b63" stroke="none" font-weight="700">3 · Bögen verbinden</text>
+            <rect x="20" y="20" width="110" height="110" stroke="#8292a4" stroke-width="1" stroke-dasharray="5 5"></rect>
+            <line x1="0" y1="75" x2="150" y2="75" stroke-width="1.5" stroke-dasharray="20 5 3 5"></line><line x1="75" y1="0" x2="75" y2="150" stroke-width="1.5" stroke-dasharray="20 5 3 5"></line>
+            <circle cx="75" cy="75" r="55" stroke-width="3"></circle>
+          </g>
+        </svg>
+      </div>
+      <div class="info success"><strong>Reihenfolge bei der Maßaufnahme:</strong> Bauteil messen → notwendige Ansichten anlegen → Formen und Achsen zeichnen → Maße und fertigungsrelevante Angaben ergänzen → Zeichnung prüfen.</div>
+
+      <div class="task source-task">
+        <div class="task-head"><strong>Rechercheauftrag 3A · Formate und Maßstäbe</strong><span class="tag required">Pflicht</span></div>
+        <div class="task-body">
+          <p><strong>Quelle:</strong> „2. TK Metall- und Bautechnik TB“. Sucht im Inhalts- oder Stichwortverzeichnis nach <em>Zeichenblätter</em>, <em>Blattformate</em> und <em>Maßstäbe</em>. Notiert die Seitenzahl eurer Ausgabe.</p>
+          <ol><li>Notiert die Außenmaße von A4 und A3.</li><li>Notiert je zwei gebräuchliche Verkleinerungs- und Vergrößerungsmaßstäbe.</li><li>Erklärt: Warum wird ein Maßstab nicht „nach Geschmack“ gewählt?</li></ol>
+          <label for="work3a">Eure Fundstellen und Ergebnisse</label><textarea id="work3a" data-save="work3a" placeholder="Seite/Kapitel, A4, A3, Maßstäbe, Begründung …"></textarea>
+          <details class="hint"><summary>Tipp 1</summary>Die kurze Seite von A4 misst 210 mm. Das nächste größere Format entsteht durch Verdoppeln entlang der passenden Seite.</details>
+          <details class="solution"><summary>Vollständige Lösung</summary><p>A4: 210 × 297 mm; A3: 297 × 420 mm. Häufige Beispiele sind 1:2 und 1:5 zur Verkleinerung sowie 2:1 und 5:1 zur Vergrößerung. Der Maßstab muss so gewählt werden, dass alle notwendigen Ansichten, Maße und Angaben übersichtlich auf das Blatt passen und Details eindeutig erkennbar bleiben.</p></details>
+        </div>
+      </div>
+
+      <fieldset class="quiz" data-correct="a" data-explain="Maßzahlen geben die wirkliche Größe an – unabhängig davon, wie groß die Darstellung auf dem Blatt ist.">
+        <legend>Welche Größe gibt die Maßzahl bei Maßstab 1:5 an?</legend>
+        <label><input type="radio" name="q3a" value="a"> Das wirkliche Bauteilmaß</label><label><input type="radio" name="q3a" value="b"> Ein Fünftel des Bauteilmaßes</label><label><input type="radio" name="q3a" value="c"> Die Länge der Maßlinie</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <fieldset class="quiz" data-correct="c" data-explain="Bei symmetrischen Formen beginnt ihr sinnvollerweise mit Mittel- und Symmetrielinien.">
+        <legend>Womit beginnt ihr eine symmetrische Freihandzeichnung?</legend>
+        <label><input type="radio" name="q3b" value="a"> Mit allen Maßzahlen</label><label><input type="radio" name="q3b" value="b"> Mit zufälligen Außenkanten</label><label><input type="radio" name="q3b" value="c"> Mit Mittel- beziehungsweise Symmetrielinien</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <button class="btn" type="button" data-grade-section>Wissen prüfen</button><span class="section-score" aria-live="polite"></span>
+      <p class="source"><strong>Zum Nachschlagen:</strong> Infos Technisches Zeichnen, PDF-S. 2 / Buch-S. 486–487; TK nach den Stichworten „Blattformate“ und „Maßstäbe“.</p>
+      <div class="module-actions"><button class="btn secondary prev" type="button">Zurück</button><button class="btn success complete" type="button">Modul abschließen und weiter</button></div>
+    </section>
+
+    <section class="module" id="modul-4" data-title="Linien">
+      <p class="eyebrow">Modul 4 · Linienarten und -breiten</p>
+      <h2>Linien tragen technische Informationen</h2>
+      <p>Eine technische Zeichnung nutzt Linien nicht dekorativ, sondern als vereinbarte Fachzeichen. Linienart und Linienbreite entscheiden darüber, ob eine Kante sichtbar, verdeckt, symmetrisch oder nur eine Hilfsinformation ist.</p>
+      <div class="grid-2">
+        <div class="card"><span class="legend-line line-wide"></span><strong>Breite Volllinie</strong><br>Sichtbare Körperkanten und Umrisse</div>
+        <div class="card"><span class="legend-line line-hidden"></span><strong>Schmale Strichlinie</strong><br>Verdeckte Kanten – nur, wenn sie für das Verständnis erforderlich sind</div>
+        <div class="card"><span class="legend-line line-center"></span><strong>Schmale Strichpunktlinie</strong><br>Mittel- und Symmetrielinien; Beginn und Ende mit langem Strich</div>
+        <div class="card"><span class="legend-line line-thin"></span><strong>Schmale Volllinie</strong><br>Maßlinien, Maßhilfslinien, Hinweislinien, Schraffuren und Projektionshilfen</div>
+        <div class="card"><span class="legend-line line-thin"></span><strong>Schmale Freihand- oder Zickzacklinie</strong><br>Begrenzung eines Teilschnitts oder einer unterbrochenen Ansicht</div>
+        <div class="card"><span class="legend-line line-double"></span><strong>Schmale Strich-Zweipunktlinie</strong><br>Zum Beispiel ursprüngliche Form vor einer Bearbeitung</div>
+      </div>
+      <div class="info"><strong>Liniengruppen:</strong> Für Handzeichnungen werden besonders die Liniengruppen 0,5 und 0,7 verwendet. Bei Gruppe 0,5 gilt: breite Linie 0,5 mm, schmale Linie 0,25 mm; Schriftzeichen, Maßzahlen und grafische Symbole etwa 0,35 mm. Entscheidend ist stets das Verhältnis breit : schmal = 2 : 1.</div>
+      <h3>Praktische Zeichenregeln</h3>
+      <ul>
+        <li>Zwei parallele Linien sollen noch eindeutig getrennt erkennbar sein; für Handzeichnungen gilt als Richtwert ein Mindestabstand von 0,7 mm.</li>
+        <li>Bei Handzeichnungen sollen sich Strich- und Strichpunktlinien möglichst in einem Strich kreuzen.</li>
+        <li>Mittellinien ragen etwas über den Umriss hinaus. Sie sind keine Körperkanten.</li>
+        <li>Verdeckte Kanten werden weggelassen, wenn sie die Zeichnung nur unübersichtlicher machen und keine zusätzliche Information liefern.</li>
+        <li>Projektions- und Konstruktionshilfen werden dünn gezeichnet und nach der Fertigstellung entfernt, wenn sie nicht zur Zeichnung gehören.</li>
+      </ul>
+
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 900 340" role="img" aria-labelledby="lineTitle lineDesc">
+          <title id="lineTitle">Linienanwendung an einer Platte mit verdeckter Querbohrung</title>
+          <desc id="lineDesc">Sichtbare Außenkanten breit, verdeckte Bohrungskanten gestrichelt, Bohrungsachse als Strichpunktlinie und Maße als schmale Volllinien.</desc>
+          <defs><marker id="lineArrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="#111"></path></marker></defs>
+          <rect x="210" y="65" width="390" height="170" fill="none" stroke="#111" stroke-width="5"></rect>
+          <g class="hidden-demo" stroke="#111" stroke-width="2" stroke-dasharray="13 9"><line x1="210" y1="125" x2="600" y2="125"></line><line x1="210" y1="175" x2="600" y2="175"></line></g>
+          <line x1="185" y1="150" x2="625" y2="150" stroke="#111" stroke-width="1.5" stroke-dasharray="26 6 4 6"></line>
+          <g stroke="#111" stroke-width="1.4"><line x1="210" y1="250" x2="210" y2="302"></line><line x1="600" y1="250" x2="600" y2="302"></line><line x1="210" y1="288" x2="600" y2="288" marker-start="url(#lineArrow)" marker-end="url(#lineArrow)"></line></g>
+          <text x="393" y="279" font-size="20">90</text>
+          <g fill="#146aa3" font-size="17"><text x="620" y="90">sichtbare Kante</text><text x="620" y="132">verdeckte Kante</text><text x="620" y="157">Mittellinie</text><text x="620" y="290">Maßlinie</text></g>
+        </svg>
+      </div>
+      <div class="toggle-row"><label><input type="checkbox" id="lineHiddenToggle" checked> Verdeckte Kanten ein-/ausblenden</label></div>
+
+      <div class="task source-task">
+        <div class="task-head"><strong>Rechercheauftrag 4A · Linientabelle prüfen</strong><span class="tag required">Pflicht</span></div>
+        <div class="task-body">
+          <p><strong>Quelle:</strong> „2. TK Metall- und Bautechnik TB“. Sucht nach <em>Linienarten</em>, <em>Linienbreiten</em> oder <em>Liniengruppen</em> und notiert die Seitenzahl eurer Ausgabe.</p>
+          <ol><li>Bestätigt die Anwendung der vier grundlegenden Linienarten aus diesem Modul.</li><li>Notiert für Liniengruppe 0,7 die breite und schmale Linienbreite.</li><li>Findet eine weitere Anwendung einer schmalen Volllinie.</li></ol>
+          <label for="work4a">Eure Ergebnisse</label><textarea id="work4a" data-save="work4a" placeholder="Fundstelle und Antworten …"></textarea>
+          <details class="hint"><summary>Tipp 1</summary>Nutzt die Spalten „Benennung“, „Darstellung“ und „Anwendung“. Achtet auf den Unterschied zwischen Grundart und Linienbreite.</details>
+          <details class="solution"><summary>Vollständige Lösung</summary><p>Liniengruppe 0,7: breite Linie 0,7 mm, schmale Linie 0,35 mm. Sichtbare Kanten: breite Volllinie; verdeckte Kanten: schmale Strichlinie; Mittel-/Symmetrielinien: schmale Strichpunktlinie; Maße, Hilfslinien und Schraffuren: schmale Volllinie. Weitere Anwendungen schmaler Volllinien sind etwa Hinweislinien oder Projektionshilfen.</p></details>
+        </div>
+      </div>
+
+      <fieldset class="quiz" data-correct="c" data-explain="Die Achse einer Bohrung wird mit einer schmalen Strichpunktlinie dargestellt.">
+        <legend>1. Wie kennzeichnet ihr die Achse einer Bohrung?</legend>
+        <label><input type="radio" name="q4a" value="a"> Breite Volllinie</label><label><input type="radio" name="q4a" value="b"> Schmale Strichlinie</label><label><input type="radio" name="q4a" value="c"> Schmale Strichpunktlinie</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <fieldset class="quiz" data-correct="b" data-explain="Bei Liniengruppe 0,5 ist die schmale Linie 0,25 mm breit; das Verhältnis beträgt 2:1.">
+        <legend>2. Welche Breite hat die schmale Linie bei Liniengruppe 0,5?</legend>
+        <label><input type="radio" name="q4b" value="a"> 0,10 mm</label><label><input type="radio" name="q4b" value="b"> 0,25 mm</label><label><input type="radio" name="q4b" value="c"> 0,50 mm</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <fieldset class="quiz" data-correct="a" data-explain="Schraffuren werden als schmale Volllinien gezeichnet.">
+        <legend>3. Welche Linie wird für eine Schnittschraffur verwendet?</legend>
+        <label><input type="radio" name="q4c" value="a"> Schmale Volllinie</label><label><input type="radio" name="q4c" value="b"> Breite Strichlinie</label><label><input type="radio" name="q4c" value="c"> Breite Strichpunktlinie</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <button class="btn" type="button" data-grade-section>Linientrainer auswerten</button><span class="section-score" aria-live="polite"></span>
+      <p class="source"><strong>Zum Nachschlagen:</strong> TK nach „Linienarten“ beziehungsweise „Liniengruppen“.</p>
+      <div class="module-actions"><button class="btn secondary prev" type="button">Zurück</button><button class="btn success complete" type="button">Modul abschließen und weiter</button></div>
+    </section>
+
+    <section class="module" id="modul-5" data-title="Ansichten">
+      <p class="eyebrow">Modul 5 · Ansichten, Projektion und räumliche Darstellung</p>
+      <h2>Vom räumlichen Bauteil zu eindeutigen Ansichten</h2>
+      <p>Ansichten entstehen, indem das Bauteil aus festgelegten Blickrichtungen rechtwinklig auf Projektionsebenen abgebildet wird. Die Vorderansicht ist die Hauptansicht. Sie soll möglichst viele Formen zeigen oder der Gebrauchs- beziehungsweise Hauptfertigungslage entsprechen.</p>
+      <div class="info"><strong>Projektionsmethode 1:</strong> Die Draufsicht liegt unter der Vorderansicht. Die Seitenansicht von links liegt rechts neben der Vorderansicht. Die Seitenansicht von rechts liegt links. Diese Anordnung muss in der gesamten Zeichnung einheitlich eingehalten werden.</div>
+
+      <h3>Was eine Ansicht tatsächlich zeigt</h3>
+      <p>Eine Ansicht ist keine perspektivische Abbildung, sondern eine rechtwinklige Parallelprojektion. Alle Projektionsstrahlen stehen senkrecht auf der jeweiligen Bildebene. Dadurch erscheinen Kanten, die parallel zur Bildebene liegen, in ihrer wahren Länge. Tiefeninformationen gehen in einer einzelnen Ansicht verloren und müssen aus einer weiteren Ansicht ergänzt werden.</p>
+      <table>
+        <thead><tr><th>Ansicht</th><th>Zeigt unmittelbar</th><th>Nicht unmittelbar erkennbar</th></tr></thead>
+        <tbody>
+          <tr><td>Vorderansicht</td><td>Breite und Höhe</td><td>Tiefe</td></tr>
+          <tr><td>Draufsicht</td><td>Breite und Tiefe</td><td>Höhe</td></tr>
+          <tr><td>Seitenansicht</td><td>Tiefe und Höhe</td><td>Breite</td></tr>
+        </tbody>
+      </table>
+      <div class="info success"><strong>Merksatz zur Zuordnung:</strong> Vorder- und Draufsicht haben dieselbe Breite. Vorder- und Seitenansicht haben dieselbe Höhe. Drauf- und Seitenansicht haben dieselbe Tiefe.</div>
+
+      <h3>Vorderansicht begründet auswählen</h3>
+      <div class="grid-3">
+        <div class="card"><h4>Informationsgehalt</h4><p>Wählt möglichst die Blickrichtung, in der charakteristische Stufen, Schrägen, Bohrungen und Ausschnitte sichtbar statt verdeckt erscheinen.</p></div>
+        <div class="card"><h4>Gebrauchslage</h4><p>Ein Bauteil wird möglichst so dargestellt, wie es eingebaut oder verwendet wird. Ein stehendes Bauteil wird nicht ohne Grund liegend gezeichnet.</p></div>
+        <div class="card"><h4>Fertigungslage</h4><p>Bei Drehteilen ist die Drehachse in der Hauptansicht waagerecht. Die Hauptbearbeitungsrichtung und typische Fertigungslage sollen erkennbar bleiben.</p></div>
+      </div>
+      <div class="info warning"><strong>Keine starre Regel:</strong> Informationsgehalt, Gebrauchs- und Fertigungslage können zu unterschiedlichen Ergebnissen führen. Entscheidend ist eine fachlich begründete Wahl, durch die möglichst wenige zusätzliche Ansichten und verdeckte Kanten nötig werden.</div>
+
+      <h3>Wie viele Ansichten sind notwendig?</h3>
+      <ol class="step-list">
+        <li>Wählt eine aussagekräftige Vorderansicht.</li>
+        <li>Prüft, welche Forminformationen noch fehlen.</li>
+        <li>Ergänzt nur die Ansichten, die die Gestalt eindeutig machen.</li>
+        <li>Ordnet die Ansichten projektionsgerecht und übersichtlich an.</li>
+      </ol>
+      <p>Ein einfaches Drehteil kann mit einer Ansicht und Durchmesserangaben eindeutig sein. Viele prismatische Bauteile benötigen zwei oder drei Ansichten. Komplexe Teile können zusätzlich Unteransicht, Rückansicht oder weitere Seitenansichten verlangen.</p>
+
+      <div class="toggle-row">
+        <label><input type="checkbox" data-view-toggle="front" checked> Vorderansicht</label>
+        <label><input type="checkbox" data-view-toggle="top" checked> Draufsicht</label>
+        <label><input type="checkbox" data-view-toggle="side" checked> Seitenansicht von links</label>
+        <label><input type="checkbox" id="hiddenToggle" checked> Verdeckte Kanten</label>
+      </div>
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 940 550" role="img" aria-labelledby="viewsTitle viewsDesc">
+          <title id="viewsTitle">Drei Ansichten eines Stufenhalters nach Projektionsmethode 1</title>
+          <desc id="viewsDesc">Vorderansicht oben links, Draufsicht darunter und Seitenansicht von links rechts.</desc>
+          <g id="view-front" transform="translate(80,60)">
+            <text x="82" y="-20" font-size="20" font-weight="700">Vorderansicht</text>
+            <path d="M0 220 L0 170 L140 170 L140 70 L320 70 L320 220 Z" fill="none" stroke="#111" stroke-width="4"></path>
+            <circle cx="220" cy="120" r="32" fill="none" stroke="#111" stroke-width="4"></circle>
+            <line x1="172" y1="120" x2="268" y2="120" stroke="#111" stroke-width="1.4" stroke-dasharray="24 6 4 6"></line>
+            <line x1="220" y1="72" x2="220" y2="168" stroke="#111" stroke-width="1.4" stroke-dasharray="24 6 4 6"></line>
+          </g>
+          <g id="view-top" transform="translate(80,375)">
+            <text x="105" y="-18" font-size="20" font-weight="700">Draufsicht</text>
+            <rect x="0" y="0" width="320" height="120" fill="none" stroke="#111" stroke-width="4"></rect>
+            <line x1="140" y1="0" x2="140" y2="120" stroke="#111" stroke-width="3"></line>
+            <g class="hidden-lines"><line x1="188" y1="0" x2="188" y2="120" stroke="#111" stroke-width="1.6" stroke-dasharray="12 8"></line><line x1="252" y1="0" x2="252" y2="120" stroke="#111" stroke-width="1.6" stroke-dasharray="12 8"></line></g>
+            <line x1="220" y1="-8" x2="220" y2="128" stroke="#111" stroke-width="1.4" stroke-dasharray="24 6 4 6"></line>
+          </g>
+          <g id="view-side" transform="translate(620,60)">
+            <text x="0" y="-20" font-size="20" font-weight="700">Seitenansicht von links</text>
+            <rect x="0" y="70" width="120" height="150" fill="none" stroke="#111" stroke-width="4"></rect>
+            <line x1="0" y1="170" x2="120" y2="170" stroke="#111" stroke-width="3"></line>
+            <g class="hidden-lines"><line x1="0" y1="105" x2="120" y2="105" stroke="#111" stroke-width="1.6" stroke-dasharray="12 8"></line><line x1="0" y1="135" x2="120" y2="135" stroke="#111" stroke-width="1.6" stroke-dasharray="12 8"></line></g>
+            <line x1="-8" y1="120" x2="128" y2="120" stroke="#111" stroke-width="1.4" stroke-dasharray="24 6 4 6"></line>
+          </g>
+          <g stroke="#7b8da1" stroke-width="1" stroke-dasharray="5 6"><line x1="80" y1="300" x2="80" y2="375"></line><line x1="400" y1="300" x2="400" y2="375"></line><line x1="400" y1="130" x2="620" y2="130"></line><line x1="400" y1="280" x2="620" y2="280"></line></g>
+        </svg>
+      </div>
+      <div class="info"><strong>Dreitafelprojektion:</strong> Breiten werden zwischen Vorder- und Draufsicht senkrecht übertragen, Höhen zwischen Vorder- und Seitenansicht waagerecht. Tiefen lassen sich mithilfe einer 45°-Projektionslinie zwischen Drauf- und Seitenansicht übertragen. Projektionslinien sind nur Hilfslinien.</div>
+
+      <h3>Anordnung der sechs Standardansichten</h3>
+      <p>Für viele Bauteile reichen ein bis drei Ansichten. Falls die Gestalt sonst nicht eindeutig ist, stehen insgesamt sechs festgelegte Blickrichtungen zur Verfügung. Auch dann gilt: Es werden nur die Ansichten ausgewählt, die zusätzliche Informationen liefern.</p>
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 980 650" role="img" aria-labelledby="sixTitle sixDesc">
+          <title id="sixTitle">Anordnung der sechs Standardansichten bei Projektionsmethode 1</title>
+          <desc id="sixDesc">Vorderansicht in der Mitte, Unteransicht darüber, Draufsicht darunter, Seitenansicht von rechts links und Seitenansicht von links rechts.</desc>
+          <g fill="#f7fbfd" stroke="#111" stroke-width="3">
+            <g transform="translate(360,245)"><rect width="210" height="135"></rect><path d="M18 113 V78 H88 V28 H190 V113 Z" fill="none" stroke-width="4"></path></g>
+            <g transform="translate(360,455)"><rect width="210" height="120"></rect><rect x="18" y="18" width="172" height="84" fill="none" stroke-width="4"></rect><line x1="88" y1="18" x2="88" y2="102" stroke-width="3"></line></g>
+            <g transform="translate(360,65)"><rect width="210" height="110"></rect><rect x="18" y="18" width="172" height="74" fill="none" stroke-width="4"></rect><line x1="88" y1="18" x2="88" y2="92" stroke-width="3"></line></g>
+            <g transform="translate(80,245)"><rect width="180" height="135"></rect><path d="M18 113 V78 H62 V28 H118 V78 H162 V113 Z" fill="none" stroke-width="4"></path></g>
+            <g transform="translate(670,245)"><rect width="180" height="135"></rect><path d="M18 113 V78 H62 V28 H118 V78 H162 V113 Z" fill="none" stroke-width="4"></path></g>
+            <g transform="translate(790,455)"><rect width="170" height="120"></rect><path d="M18 98 V63 H65 V18 H152 V98 Z" fill="none" stroke-width="4"></path></g>
+          </g>
+          <g fill="#123b63" font-size="17" font-weight="700" text-anchor="middle">
+            <text x="465" y="230">Vorderansicht</text>
+            <text x="465" y="440">Draufsicht</text>
+            <text x="465" y="50">Unteransicht</text>
+            <text x="170" y="230">Seitenansicht von rechts</text>
+            <text x="760" y="230">Seitenansicht von links</text>
+            <text x="875" y="440">Rückansicht</text>
+          </g>
+          <g stroke="#7b8da1" stroke-width="1.3" stroke-dasharray="7 6">
+            <line x1="360" y1="175" x2="360" y2="245"></line><line x1="570" y1="175" x2="570" y2="245"></line>
+            <line x1="360" y1="380" x2="360" y2="455"></line><line x1="570" y1="380" x2="570" y2="455"></line>
+            <line x1="260" y1="245" x2="360" y2="245"></line><line x1="260" y1="380" x2="360" y2="380"></line>
+            <line x1="570" y1="245" x2="670" y2="245"></line><line x1="570" y1="380" x2="670" y2="380"></line>
+          </g>
+          <text x="40" y="625" font-size="16" fill="#566276">Rückansicht: Sie darf entsprechend der verfügbaren Blattfläche an einer eindeutig zuordenbaren Position angeordnet werden.</text>
+        </svg>
+      </div>
+
+      <h3>Ansichten Schritt für Schritt entwickeln</h3>
+      <ol class="step-list">
+        <li><strong>Bauteil analysieren:</strong> Grundkörper und Formelemente wie Stufe, Bohrung, Nut oder Schräge gedanklich zerlegen.</li>
+        <li><strong>Hauptansicht festlegen:</strong> Blickrichtung wählen und den notwendigen Platz auf dem Blatt planen.</li>
+        <li><strong>Vorderansicht zeichnen:</strong> Zuerst dünne Hilfslinien, dann sichtbare Konturen, Mittellinien und nur notwendige verdeckte Kanten.</li>
+        <li><strong>Draufsicht projizieren:</strong> Alle charakteristischen Breiten senkrecht nach unten übertragen; Tiefen aus den Bauteilangaben ergänzen.</li>
+        <li><strong>Seitenansicht projizieren:</strong> Höhen waagerecht aus der Vorderansicht übernehmen. Tiefen aus der Draufsicht über eine 45°-Hilfslinie übertragen.</li>
+        <li><strong>Linien prüfen:</strong> Entscheiden, welche Kanten in jeder Blickrichtung sichtbar, verdeckt oder Mittellinien sind.</li>
+        <li><strong>Hilfslinien entfernen:</strong> Erst nach der Kontrolle der Fluchten und der Übereinstimmung aller Ansichten.</li>
+      </ol>
+      <div class="grid-3">
+        <div class="card"><h4>Breite übertragen</h4><p>Alle senkrechten Projektionslinien verbinden gleiche x-Lagen in Vorder- und Draufsicht.</p></div>
+        <div class="card"><h4>Höhe übertragen</h4><p>Alle waagerechten Projektionslinien verbinden gleiche z-Lagen in Vorder- und Seitenansicht.</p></div>
+        <div class="card"><h4>Tiefe übertragen</h4><p>Die 45°-Hilfslinie lenkt die Tiefen aus der Draufsicht in die Seitenansicht um.</p></div>
+      </div>
+
+      <details class="hint"><summary>Typische Denkfehler bei Ansichten</summary><ul><li>Eine sichtbare Kreisfläche erscheint in einer anderen Ansicht meist als zwei Kanten oder als verdeckte Linien.</li><li>Eine Kante darf nicht „aus Gewohnheit“ übernommen werden: Prüft immer, ob sie aus der jeweiligen Blickrichtung sichtbar ist.</li><li>Mehr Ansichten bedeuten nicht automatisch mehr Qualität. Eine überflüssige Ansicht kann Widersprüche erzeugen.</li><li>Die Ansichten dürfen nicht gegeneinander verschoben sein; zugehörige Kanten müssen fluchten.</li></ul></details>
+
+      <h3>Pfeilmethode für frei platzierte Ansichten</h3>
+      <div class="grid-2">
+        <div class="card"><h4>Pfeilmethode</h4><p>Wenn eine Ansicht nicht nach der normalen Anordnung der Projektionsmethode 1 platziert wird, kennzeichnen Blickpfeil und Großbuchstabe die Richtung. Die zugehörige Ansicht erhält denselben Buchstaben. Das eignet sich etwa für eine Ansicht in wahrer Länge.</p></div>
+        <div class="card"><h4>Perspektivische Darstellung</h4><p>Sie unterstützt das räumliche Verständnis, ersetzt aber keine eindeutigen Ansichten. In perspektivischen Darstellungen werden hier keine Maße, Mittel-/Symmetrielinien und verdeckten Kanten eingetragen.</p></div>
+      </div>
+
+      <h3>Werkstücke räumlich darstellen</h3>
+      <p>Räumliche Darstellungen vermitteln schnell einen Gesamteindruck. Sie eignen sich für Entwürfe, Freihandskizzen, Montageerklärungen und zur Kontrolle des eigenen räumlichen Vorstellungsvermögens. Für die Fertigung werden sie durch eindeutige Ansichten und Maße ergänzt.</p>
+      <table>
+        <thead><tr><th>Darstellung</th><th>Kantenverhältnis</th><th>Hinweis</th></tr></thead>
+        <tbody><tr><td>Isometrische Projektion</td><td>1 : 1 : 1</td><td>Längen werden auf allen drei Achsen im gleichen Verhältnis abgetragen. Vertikale Kanten bleiben senkrecht; die beiden anderen Achsen verlaufen symmetrisch. Kreise erscheinen als Ellipsen.</td></tr><tr><td>Dimetrische Projektion</td><td>0,5 : 1 : 1</td><td>Eine zurücklaufende Achsrichtung wird halbiert, zwei Achsrichtungen werden gleich behandelt. Dadurch wirkt die Darstellung weniger tief.</td></tr><tr><td>Kabinettprojektion</td><td>0,5 : 1 : 1</td><td>Die Vorderfläche wird in wahrer Form gezeichnet. Tiefenkanten laufen schräg und werden halbiert; geeignet für schnelle Handskizzen.</td></tr><tr><td>Kavalierprojektion</td><td>1 : 1 : 1</td><td>Die Vorderfläche bleibt in wahrer Form, die schrägen Tiefenkanten werden unverkürzt abgetragen. Die Darstellung wirkt dadurch häufig stark in die Tiefe gezogen.</td></tr></tbody>
+      </table>
+
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 1050 400" role="img" aria-labelledby="spaceTitle spaceDesc">
+          <title id="spaceTitle">Vergleich von isometrischer, dimetrischer und Kabinettprojektion</title>
+          <desc id="spaceDesc">Dasselbe quaderförmige Werkstück wird in drei räumlichen Darstellungsarten gezeigt.</desc>
+          <g transform="translate(70,75)" fill="none" stroke="#111" stroke-width="3">
+            <text x="80" y="-30" fill="#123b63" stroke="none" font-size="20" font-weight="700">Isometrisch · 1 : 1 : 1</text>
+            <path d="M120 90 L230 28 L330 86 L220 150 Z"></path><path d="M120 90 V220 L220 282 V150"></path><path d="M220 150 L330 86 V216 L220 282"></path>
+            <path d="M165 116 L165 70 L220 102 L220 150"></path><path d="M165 70 L220 38 L275 70 L220 102"></path><path d="M220 102 L275 70 V116 L220 150"></path>
+            <g stroke="#146aa3" stroke-width="2"><line x1="120" y1="220" x2="65" y2="252"></line><line x1="120" y1="220" x2="175" y2="252"></line><line x1="120" y1="220" x2="120" y2="155"></line></g>
+          </g>
+          <g transform="translate(395,75)" fill="none" stroke="#111" stroke-width="3">
+            <text x="65" y="-30" fill="#123b63" stroke="none" font-size="20" font-weight="700">Dimetrisch · 0,5 : 1 : 1</text>
+            <path d="M55 115 L235 92 L305 28 L125 52 Z"></path><path d="M55 115 V235 L125 272 V52"></path><path d="M125 52 L305 28 V148 L125 172 Z"></path><path d="M125 172 L305 148 L235 212 L125 227"></path>
+            <path d="M125 52 L125 172 M235 92 V212"></path>
+            <g stroke="#146aa3" stroke-width="2"><line x1="55" y1="235" x2="15" y2="272"></line><line x1="55" y1="235" x2="150" y2="223"></line><line x1="55" y1="235" x2="55" y2="170"></line></g>
+          </g>
+          <g transform="translate(760,75)" fill="none" stroke="#111" stroke-width="3">
+            <text x="35" y="-30" fill="#123b63" stroke="none" font-size="20" font-weight="700">Kabinett · Tiefe 1 : 2</text>
+            <rect x="30" y="55" width="180" height="180"></rect><path d="M30 55 L95 0 H275 L210 55 M210 55 L275 0 V180 L210 235"></path>
+            <rect x="75" y="105" width="90" height="70"></rect><path d="M75 105 L108 77 H198 L165 105 M165 105 L198 77 V147 L165 175"></path>
+            <g stroke="#146aa3" stroke-width="2"><line x1="30" y1="235" x2="95" y2="180"></line><line x1="30" y1="235" x2="105" y2="235"></line><line x1="30" y1="235" x2="30" y2="170"></line></g>
+          </g>
+        </svg>
+      </div>
+
+      <h4>Konstruktionsweg für eine räumliche Darstellung</h4>
+      <ol class="step-list">
+        <li><strong>Darstellungsart auswählen:</strong> Isometrie für gleichwertige Achsen, Dimetrie für geringere Tiefe, Kabinettprojektion für eine wichtige Vorderfläche.</li>
+        <li><strong>Achsensystem leicht vorzeichnen:</strong> Lage des Werkstücks so wählen, dass die wesentlichen Formelemente sichtbar werden.</li>
+        <li><strong>Umhüllungsquader aufbauen:</strong> Gesamtlänge, -breite und -höhe entsprechend dem Kantenverhältnis abtragen.</li>
+        <li><strong>Formelemente einfügen:</strong> Stufen, Nuten und Ausschnitte von gut erkennbaren Bezugsebenen aus konstruieren.</li>
+        <li><strong>Kreise übertragen:</strong> Zuerst das umschließende Parallelogramm zeichnen, dann die Ellipse in dieser Fläche konstruieren oder skizzieren.</li>
+        <li><strong>Zeichnung bereinigen:</strong> Sichtbare Konturen betonen, Hilfslinien entfernen; verdeckte Kanten, Achsen und Maße weglassen.</li>
+      </ol>
+      <details class="hint"><summary>Tipp für Kreise in räumlichen Darstellungen</summary><p>Ein Kreis bleibt nur dann ein Kreis, wenn seine Ebene parallel zur Zeichenebene liegt. In schrägen Flächen erscheint er als Ellipse. Zeichnet zuerst das Quadrat beziehungsweise Parallelogramm um den Kreis, markiert die Seitenmitten und legt die Ellipse tangential durch diese Punkte.</p></details>
+      <details class="solution"><summary>Prüfliste für eure räumliche Zeichnung</summary><ul><li>Die Darstellungsart und das Kantenverhältnis wurden durchgehend eingehalten.</li><li>Parallele Werkstückkanten verlaufen auch in der Zeichnung parallel.</li><li>Alle Formelemente liegen auf den richtigen Flächen und an der richtigen Position.</li><li>Kreise sind als passende Ellipsen dargestellt.</li><li>Nur sichtbare Konturen sind betont; Maße, Mittellinien und verdeckte Kanten fehlen.</li></ul></details>
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 900 360" role="img" aria-labelledby="isoTitle isoDesc">
+          <title id="isoTitle">Isometrischer Stufenblock und zugehörige Ansichten</title><desc id="isoDesc">Links räumliche Darstellung eines Stufenblocks, rechts vereinfachte Vorder- und Draufsicht.</desc>
+          <g transform="translate(70,55)" fill="#edf5fa" stroke="#111" stroke-width="3">
+            <path d="M0 150 L170 250 L360 140 L190 40 Z" fill="#e2eef6"></path>
+            <path d="M0 150 L0 230 L170 330 L170 250 Z" fill="#cadfeb"></path>
+            <path d="M170 250 L170 330 L360 220 L360 140 Z" fill="#b8d4e5"></path>
+            <path d="M95 205 L95 125 L190 180 L190 260 Z" fill="#f7fbfd"></path>
+            <path d="M95 125 L190 70 L285 125 L190 180 Z" fill="#f0f7fb"></path>
+            <path d="M190 180 L285 125 L285 205 L190 260 Z" fill="#d6e7f1"></path>
+          </g>
+          <g transform="translate(560,70)" fill="none" stroke="#111">
+            <text x="45" y="-18" fill="#123b63" stroke="none" font-weight="700">Vorderansicht</text>
+            <path d="M0 130 L0 70 L90 70 L90 0 L210 0 L210 130 Z" stroke-width="4"></path>
+          </g>
+          <g transform="translate(560,260)" fill="none" stroke="#111">
+            <text x="65" y="-16" fill="#123b63" stroke="none" font-weight="700">Draufsicht</text>
+            <rect x="0" y="0" width="210" height="80" stroke-width="4"></rect><line x1="90" y1="0" x2="90" y2="80" stroke-width="3"></line>
+          </g>
+        </svg>
+      </div>
+
+      <div class="task">
+        <div class="task-head"><strong>Übung 5A · Von Ansichten zum räumlichen Körper</strong><span class="tag required">Pflicht</span></div>
+        <div class="task-body">
+          <p>Verwendet die dargestellte Vorder- und Draufsicht des Stufenblocks. Fertigt zuerst eine isometrische Darstellung und anschließend wahlweise eine dimetrische oder eine Kabinettprojektion an.</p>
+          <ol><li>Markiert in beiden Ansichten Gesamtbreite, Gesamthöhe und Tiefe.</li><li>Zeichnet den Umhüllungsquader.</li><li>Übertragt die Stufe von einer gemeinsamen Bezugskante.</li><li>Vergleicht Lage und Parallelität aller Kanten mit den Ansichten.</li></ol>
+          <details class="hint"><summary>Tipp 1 · Umhüllungsquader</summary>Zeichnet zunächst einen vollständigen Quader. Entfernt danach gedanklich den Bereich, der in Vorder- und Draufsicht nicht zum Werkstück gehört.</details>
+          <details class="hint"><summary>Tipp 2 · Kabinettprojektion</summary>Übertragt die Vorderansicht in wahrer Form. Zeichnet alle Tiefenkanten parallel in dieselbe schräge Richtung und nur mit halber Tiefe.</details>
+          <details class="solution"><summary>Vollständige Selbstkontrolle</summary><p>Die Stufenkante muss in allen parallelen Flächen auf derselben x-Position liegen. In der Isometrie werden alle drei Achsrichtungen im Verhältnis 1 : 1 : 1 abgetragen. In Dimetrie und Kabinettprojektion wird die festgelegte Tiefenrichtung halbiert. Alle sichtbaren Kanten bleiben parallel zu einer der drei gewählten Achsen.</p></details>
+        </div>
+      </div>
+
+      <div class="task source-task">
+        <div class="task-head"><strong>Rechercheauftrag 5B · Projektionsmethode</strong><span class="tag required">Pflicht</span></div>
+        <div class="task-body">
+          <p><strong>Quelle:</strong> „1. Infos Technisches Zeichnen“, PDF-S. 3 / Buch-S. 488–489.</p>
+          <ol><li>Findet das Symbol der Projektionsmethode 1.</li><li>Beschreibt die Lage von Draufsicht und Seitenansicht von links.</li><li>Notiert zwei Kriterien für die Wahl einer Vorderansicht.</li></ol>
+          <label for="work5a">Eure Ergebnisse</label><textarea id="work5a" data-save="work5a" placeholder="Symbol/Fundstelle, Anordnung, Kriterien …"></textarea>
+          <details class="hint"><summary>Tipp 1</summary>Bezieht jede Aussage auf die Vorderansicht. „Von links gesehen“ bedeutet bei Methode 1 nicht „links gezeichnet“.</details>
+          <details class="solution"><summary>Vollständige Lösung</summary><p>Bei Projektionsmethode 1 liegt die Draufsicht unter der Vorderansicht und die Seitenansicht von links rechts daneben. Eine geeignete Vorderansicht zeigt möglichst viele Formen und Abmessungen; sie kann außerdem der Gebrauchslage oder bei Drehteilen der Hauptfertigungslage entsprechen. Das Projektionssymbol findet ihr in der genannten Quelle beim Abschnitt zu Ansichten.</p></details>
+        </div>
+      </div>
+
+      <div class="task advanced">
+        <div class="task-head"><strong>Transfer 5C · Ansichten selbst entwickeln</strong><span class="tag optional">Transfer</span></div>
+        <div class="task-body">
+          <p>Zeichnet einen Stufenblock 60 × 40 × 20 mm. Auf den rechten 30 mm ist er insgesamt 40 mm hoch. Eine Durchgangsbohrung ⌀12 verläuft von vorn nach hinten; Mittelpunkt 45 mm von links und 30 mm über der Grundfläche.</p>
+          <ol><li>Wählt und begründet die Vorderansicht.</li><li>Zeichnet Vorderansicht, Draufsicht und Seitenansicht von links nach Projektionsmethode 1.</li><li>Tragt sichtbare, verdeckte und Mittellinien korrekt ein. Noch nicht bemaßen.</li></ol>
+          <details class="hint"><summary>Tipp 1 · Form</summary>Die Vorderansicht zeigt den Stufenverlauf und die Bohrung als Kreis. In Drauf- und Seitenansicht wird die Bohrung durch verdeckte Linien und eine Mittellinie sichtbar gemacht.</details>
+          <details class="hint"><summary>Tipp 2 · Anordnung</summary>Legt zuerst die Vorderansicht an. Projiziert die Draufsicht senkrecht nach unten und die Seitenansicht von links waagerecht nach rechts.</details>
+          <details class="solution"><summary>Lösungskriterien</summary><p>Vorderansicht: L-förmige Außenkontur, Kreis ⌀12 im hohen rechten Bereich. Draufsicht: Rechteck 60 × 40 mit Stufenkante bei 30 mm; verdeckte Bohrungskanten parallel zur Tiefe. Seitenansicht links: Rechteck 40 × 40 mit sichtbarer Stufenkante in 20 mm Höhe; verdeckte Bohrungskanten in 24 mm und 36 mm Höhe. Die Ansichten sind fluchtend angeordnet.</p></details>
+        </div>
+      </div>
+
+      <fieldset class="quiz" data-correct="a" data-explain="Nach Projektionsmethode 1 liegt die Draufsicht unterhalb der Vorderansicht.">
+        <legend>1. Wo liegt die Draufsicht bei Projektionsmethode 1?</legend>
+        <label><input type="radio" name="q5a" value="a"> Unter der Vorderansicht</label><label><input type="radio" name="q5a" value="b"> Über der Vorderansicht</label><label><input type="radio" name="q5a" value="c"> Immer rechts neben der Vorderansicht</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <fieldset class="quiz" data-correct="c" data-explain="Die Hauptansicht soll die Form eindeutig zeigen und orientiert sich häufig an Gebrauchs- oder Fertigungslage.">
+        <legend>2. Wie wird eine sinnvolle Vorderansicht gewählt?</legend>
+        <label><input type="radio" name="q5b" value="a"> Nach der größten leeren Papierfläche</label><label><input type="radio" name="q5b" value="b"> Immer aus derselben Himmelsrichtung</label><label><input type="radio" name="q5b" value="c"> Nach Informationsgehalt sowie Gebrauchs- oder Fertigungslage</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <fieldset class="quiz" data-correct="b" data-explain="In den hier verwendeten räumlichen Darstellungen werden keine Bemaßung, Symmetrielinien und verdeckten Kanten eingezeichnet.">
+        <legend>3. Welche Angabe gehört nicht in die perspektivische Darstellung?</legend>
+        <label><input type="radio" name="q5c" value="a"> Sichtbare Kontur</label><label><input type="radio" name="q5c" value="b"> Bemaßung</label><label><input type="radio" name="q5c" value="c"> Erkennbare Stufe</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <fieldset class="quiz" data-correct="a" data-explain="Vorder- und Draufsicht zeigen dieselbe Breite; entsprechende Kanten werden senkrecht projiziert.">
+        <legend>4. Welche Abmessung ist in Vorder- und Draufsicht gemeinsam?</legend>
+        <label><input type="radio" name="q5d" value="a"> Breite</label><label><input type="radio" name="q5d" value="b"> Höhe</label><label><input type="radio" name="q5d" value="c"> Nur der Durchmesser</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <fieldset class="quiz" data-correct="c" data-explain="Bei der Kabinettprojektion wird die Vorderfläche in wahrer Form dargestellt; die Tiefenkanten werden schräg und halbiert gezeichnet.">
+        <legend>5. Was kennzeichnet die Kabinettprojektion?</legend>
+        <label><input type="radio" name="q5e" value="a"> Alle drei Achsen werden gleich lang gezeichnet.</label><label><input type="radio" name="q5e" value="b"> Die Vorderfläche wird halbiert.</label><label><input type="radio" name="q5e" value="c"> Die Vorderfläche bleibt unverzerrt, die Tiefe wird halbiert.</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <button class="btn" type="button" data-grade-section>Ansichtentrainer auswerten</button><span class="section-score" aria-live="polite"></span>
+      <p class="source"><strong>Zum Nachschlagen:</strong> Infos Technisches Zeichnen, PDF-S. 3 / Buch-S. 488–489.</p>
+      <div class="module-actions"><button class="btn secondary prev" type="button">Zurück</button><button class="btn success complete" type="button">Modul abschließen und weiter</button></div>
+    </section>
+
+    <section class="module" id="modul-6" data-title="Bemaßung">
+      <p class="eyebrow">Modul 6 · Schnitte und Bemaßung</p>
+      <h2>Innere Form sichtbar und das Bauteil herstellbar machen</h2>
+      <p>Verdeckte Kanten reichen bei inneren Formen oft nicht aus – außerdem dürfen sie nicht bemaßt werden. Ein Schnitt denkt das Bauteil an einer festgelegten Ebene aufgeschnitten. Die Bemaßung legt anschließend Größe und Lage aller notwendigen Formen fest.</p>
+
+      <h3>Schnittdarstellungen</h3>
+      <div class="grid-3">
+        <div class="card"><h4>Vollschnitt</h4><p>Der gedachte Schnitt läuft durch das ganze Bauteil. Außen- und Innenkonturen der Schnittansicht werden sichtbar dargestellt.</p></div>
+        <div class="card"><h4>Halbschnitt</h4><p>Bei symmetrischen Bauteilen zeigt eine Hälfte den Schnitt, die andere die Ansicht. Trennlinie ist die Mittellinie.</p></div>
+        <div class="card"><h4>Teilschnitt</h4><p>Nur ein begrenzter Bereich wird aufgebrochen. Eine schmale Freihandlinie begrenzt den Schnitt; sie darf nicht mit einer Körperkante zusammenfallen.</p></div>
+      </div>
+
+      <h3>Wie eine Schnittansicht entsteht</h3>
+      <ol class="step-list">
+        <li><strong>Schnittebene festlegen:</strong> Die gedachte Ebene wird so gelegt, dass wichtige Innenformen – zum Beispiel Bohrungen, Absätze oder Hohlräume – getroffen werden.</li>
+        <li><strong>Vorderen Teil entfernen:</strong> Der zwischen Betrachtenden und Schnittebene liegende Werkstückteil wird nur gedanklich weggenommen.</li>
+        <li><strong>In Pfeilrichtung blicken:</strong> Die Pfeile am Schnittverlauf legen fest, welche Blickrichtung für die Schnittansicht gilt.</li>
+        <li><strong>Schnittkontur zeichnen:</strong> Alle Kanten in der Schnittebene und die dahinter sichtbaren Außenkonturen werden dargestellt.</li>
+        <li><strong>Schnittflächen schraffieren:</strong> Nur dort, wo die Ebene tatsächlich Material durchtrennt, wird schraffiert. Bohrungen und andere Hohlräume bleiben frei.</li>
+        <li><strong>Darstellung bereinigen:</strong> Verdeckte Kanten werden in der Schnittansicht normalerweise weggelassen, wenn sie keine zusätzliche Information liefern.</li>
+      </ol>
+      <table>
+        <thead><tr><th>Schnittart</th><th>Geeignet für</th><th>Erkennungsmerkmal</th><th>Typischer Fehler</th></tr></thead>
+        <tbody>
+          <tr><td>Vollschnitt</td><td>Bauteile mit Innenkonturen über die ganze Breite</td><td>gesamte betroffene Materialfläche schraffiert</td><td>Hohlräume werden versehentlich mit schraffiert</td></tr>
+          <tr><td>Halbschnitt</td><td>symmetrische Bauteile, besonders Hülsen und Gehäuse</td><td>eine Hälfte Schnitt, eine Hälfte Ansicht; Grenze ist die Mittellinie</td><td>Trennlinie als breite Körperkante gezeichnet</td></tr>
+          <tr><td>Teilschnitt</td><td>einzelne lokale Innenform</td><td>Begrenzung durch schmale Freihandlinie</td><td>Begrenzung fällt mit einer sichtbaren Körperkante zusammen</td></tr>
+          <tr><td>Abgesetzter Schnitt</td><td>mehrere wichtige Formelemente, die nicht in einer Ebene liegen</td><td>Schnittverlauf knickt ab; Knickstellen werden eindeutig dargestellt</td><td>Versatz wird in der Schnittansicht als Körperkante gezeigt</td></tr>
+        </tbody>
+      </table>
+      <ul>
+        <li>Der Schnittverlauf wird mit breiter Strichpunktlinie, Pfeilen und Großbuchstaben gekennzeichnet.</li>
+        <li>Die Pfeile zeigen die Blickrichtung; die Schnittansicht trägt dieselben Buchstaben, zum Beispiel A–A.</li>
+        <li>Schraffuren sind schmale parallele Volllinien, üblicherweise unter 45° zu den Hauptachsen.</li>
+        <li>Schraffiert wird nur durchtrenntes Material – Hohlräume bleiben frei.</li>
+        <li>Die Schraffur eines Bauteils bleibt innerhalb der Zeichnung in Richtung und Abstand gleich.</li>
+      </ul>
+      <div class="info"><strong>Schnittverlauf:</strong> Liegen mehrere wichtige Innenformen nicht in derselben Ebene, darf der Schnittverlauf abknicken oder parallel versetzt werden. In der fertigen Schnittansicht wird der Versatz nicht als Kante gezeichnet; die getroffenen Formen erscheinen gemeinsam in einer Schnittebene.</div>
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 940 380" role="img" aria-labelledby="sectionTitle sectionDesc">
+          <title id="sectionTitle">Schnitt A-A einer Flanschhülse</title><desc id="sectionDesc">Links Stirnansicht mit Schnittverlauf, rechts Längsschnitt mit schraffiertem Material und freier Bohrung.</desc>
+          <defs>
+            <pattern id="hatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="10" stroke="#111" stroke-width="1.3"></line></pattern>
+            <marker id="cutArrow" markerWidth="9" markerHeight="9" refX="4" refY="4" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#111"></path></marker>
+          </defs>
+          <g transform="translate(75,70)">
+            <text x="65" y="-24" font-size="20" font-weight="700">Stirnansicht</text>
+            <circle cx="130" cy="130" r="105" fill="none" stroke="#111" stroke-width="4"></circle><circle cx="130" cy="130" r="48" fill="none" stroke="#111" stroke-width="4"></circle>
+            <line x1="10" y1="130" x2="250" y2="130" stroke="#111" stroke-width="1.4" stroke-dasharray="24 6 4 6"></line><line x1="130" y1="10" x2="130" y2="250" stroke="#111" stroke-width="1.4" stroke-dasharray="24 6 4 6"></line>
+            <line x1="20" y1="80" x2="240" y2="80" stroke="#111" stroke-width="4" stroke-dasharray="28 7 5 7"></line>
+            <line x1="20" y1="55" x2="20" y2="80" stroke="#111" stroke-width="4" marker-end="url(#cutArrow)"></line><line x1="240" y1="55" x2="240" y2="80" stroke="#111" stroke-width="4" marker-end="url(#cutArrow)"></line>
+            <text x="8" y="45" font-size="22" font-weight="700">A</text><text x="230" y="45" font-size="22" font-weight="700">A</text>
+          </g>
+          <g transform="translate(470,80)">
+            <text x="120" y="-28" font-size="20" font-weight="700">Schnitt A–A</text>
+            <path d="M0 65 H55 V20 H330 V65 H385 V215 H330 V260 H55 V215 H0 Z M0 110 H385 V170 H0 Z" fill="url(#hatch)" fill-rule="evenodd" stroke="#111" stroke-width="4"></path>
+            <line x1="-10" y1="140" x2="395" y2="140" stroke="#111" stroke-width="1.4" stroke-dasharray="24 6 4 6"></line>
+            <text x="80" y="302" font-size="16" fill="#146aa3">Material schraffiert – Bohrung bleibt frei</text>
+          </g>
+        </svg>
+      </div>
+
+      <h4>Vollschnitt, Halbschnitt und Teilschnitt im direkten Vergleich</h4>
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 1050 360" role="img" aria-labelledby="cutTypesTitle cutTypesDesc">
+          <title id="cutTypesTitle">Vergleich der drei grundlegenden Schnittarten</title>
+          <desc id="cutTypesDesc">Vollschnitt einer Hülse, Halbschnitt eines symmetrischen Bauteils und Teilschnitt eines Blocks.</desc>
+          <defs>
+            <pattern id="hatch2" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="9" stroke="#111" stroke-width="1.2"></line></pattern>
+          </defs>
+          <g transform="translate(40,65)">
+            <text x="95" y="-25" fill="#123b63" font-size="20" font-weight="700">Vollschnitt</text>
+            <path d="M0 20 H290 V180 H0 Z M0 70 H290 V130 H0 Z" fill="url(#hatch2)" fill-rule="evenodd" stroke="#111" stroke-width="4"></path>
+            <line x1="-10" y1="100" x2="300" y2="100" stroke="#111" stroke-width="1.3" stroke-dasharray="23 6 4 6"></line>
+            <text x="36" y="225" font-size="16" fill="#566276">gesamtes Material geschnitten</text>
+          </g>
+          <g transform="translate(390,65)">
+            <text x="90" y="-25" fill="#123b63" font-size="20" font-weight="700">Halbschnitt</text>
+            <rect x="0" y="20" width="290" height="160" fill="none" stroke="#111" stroke-width="4"></rect>
+            <path d="M145 20 H290 V180 H145 Z M145 70 H290 V130 H145 Z" fill="url(#hatch2)" fill-rule="evenodd"></path>
+            <line x1="145" y1="5" x2="145" y2="195" stroke="#111" stroke-width="1.5" stroke-dasharray="23 6 4 6"></line>
+            <line x1="0" y1="70" x2="145" y2="70" stroke="#111" stroke-width="1.8" stroke-dasharray="12 8"></line><line x1="0" y1="130" x2="145" y2="130" stroke="#111" stroke-width="1.8" stroke-dasharray="12 8"></line>
+            <text x="35" y="225" font-size="16" fill="#566276">links Ansicht · rechts Schnitt</text>
+          </g>
+          <g transform="translate(740,65)">
+            <text x="96" y="-25" fill="#123b63" font-size="20" font-weight="700">Teilschnitt</text>
+            <rect x="0" y="20" width="270" height="160" fill="none" stroke="#111" stroke-width="4"></rect>
+            <path d="M150 60 C138 72 163 82 148 96 C134 110 160 121 145 135 L270 135 V60 Z" fill="url(#hatch2)" stroke="#111" stroke-width="1.4"></path>
+            <rect x="205" y="82" width="65" height="32" fill="#fff" stroke="#111" stroke-width="3"></rect>
+            <text x="44" y="225" font-size="16" fill="#566276">lokal durch Freihandlinie begrenzt</text>
+          </g>
+        </svg>
+      </div>
+
+      <h4>Schraffuren fachgerecht verwenden</h4>
+      <div class="grid-2">
+        <div class="card"><h4>Ein einzelnes Bauteil</h4><p>Schraffurlinien verlaufen dünn, parallel und mit gleichmäßigem Abstand. Richtung und Abstand bleiben für dasselbe Bauteil in allen zugehörigen Schnittansichten gleich.</p></div>
+        <div class="card"><h4>Benachbarte Bauteile</h4><p>In Baugruppen werden angrenzende Teile durch unterschiedliche Schraffurrichtung oder unterschiedlichen Abstand unterscheidbar gemacht.</p></div>
+        <div class="card"><h4>Große und kleine Flächen</h4><p>Der Abstand wird an die Größe der Schnittfläche angepasst: große Flächen dürfen weiter, kleine Flächen enger schraffiert werden, solange die Zuordnung eindeutig bleibt.</p></div>
+        <div class="card"><h4>Hohlräume und Ausschnitte</h4><p>Bohrungen, Nuten und andere Hohlräume enthalten keine Schraffur. Die Schraffur endet an ihrer sichtbaren Kontur.</p></div>
+      </div>
+      <details class="advanced"><summary>Besondere Darstellungen – erster Überblick</summary><ul><li><strong>Teilansicht:</strong> nur ein für die Eindeutigkeit ausreichender Teil der Ansicht.</li><li><strong>Unterbrochene Ansicht:</strong> lange, gleichförmige Teile werden mit Freihand-/Zickzacklinie verkürzt dargestellt; das Maß bleibt das Wirkmaß.</li><li><strong>Einzelheit:</strong> kleines Detail wird vergrößert und mit Großbuchstabe sowie Maßstab gekennzeichnet.</li><li><strong>Ursprüngliche Form:</strong> vor der Bearbeitung als schmale Strich-Zweipunktlinie.</li><li><strong>Besonderheit:</strong> Rippen, Stege und Speichen werden in bestimmten Längsschnitten nicht schraffiert. Wellen, Bolzen und Achsen werden längs grundsätzlich nicht geschnitten, sofern keine innere Geometrie darzustellen ist.</li></ul></details>
+
+      <h3>Besondere Darstellungen normgerecht auswählen</h3>
+      <p>Besondere Darstellungen sparen Platz oder zeigen ein Detail eindeutiger. Sie dürfen nur verwendet werden, wenn die Form trotz der Vereinfachung vollständig bestimmbar bleibt.</p>
+      <table>
+        <thead><tr><th>Darstellungsart</th><th>Wann sinnvoll?</th><th>Kennzeichnung</th></tr></thead>
+        <tbody>
+          <tr><td>Symmetrische Teilansicht</td><td>Eine Hälfte oder ein Viertel genügt zur vollständigen Beschreibung.</td><td>Mittellinie begrenzt die Ansicht; kurze parallele schmale Volllinien kennzeichnen die Symmetriebegrenzung.</td></tr>
+          <tr><td>Teilansicht mit Blickpfeil</td><td>Nur ein örtlicher Bereich wird aus einer bestimmten Richtung benötigt.</td><td>Blickpfeil und Großbuchstabe; die Teilansicht erhält denselben Buchstaben. Eine abweichende Drehung wird zusätzlich gekennzeichnet.</td></tr>
+          <tr><td>Unterbrochene Ansicht</td><td>Lange Bauteile besitzen über große Bereiche einen gleichbleibenden Querschnitt.</td><td>Schmale Freihand- oder Zickzacklinien begrenzen die Unterbrechung. Die Maßzahl gibt weiterhin die volle Länge an.</td></tr>
+          <tr><td>Vergrößerte Einzelheit</td><td>Ein kleiner Bereich ist in der Hauptansicht nicht eindeutig darstell- oder bemaßbar.</td><td>Bereich dünn umgrenzen, mit Großbuchstaben kennzeichnen und vergrößert mit Buchstabe und Maßstab wiedergeben.</td></tr>
+          <tr><td>Ursprüngliche Form</td><td>Die Form vor einer Bearbeitung soll zusätzlich erkennbar bleiben.</td><td>Schmale Strich-Zweipunktlinie.</td></tr>
+        </tbody>
+      </table>
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 1080 500" role="img" aria-labelledby="specialTitle specialDesc">
+          <title id="specialTitle">Beispiele besonderer technischer Darstellungen</title>
+          <desc id="specialDesc">Symmetrische Teilansicht, unterbrochene Ansicht, vergrößerte Einzelheit und ursprüngliche Form.</desc>
+          <g transform="translate(55,70)" fill="none" stroke="#111">
+            <text x="35" y="-25" fill="#123b63" stroke="none" font-size="19" font-weight="700">Symmetrische Teilansicht</text>
+            <line x1="145" y1="0" x2="145" y2="180" stroke-width="1.4" stroke-dasharray="24 6 4 6"></line>
+            <path d="M145 20 H220 V55 H260 V125 H220 V160 H145" stroke-width="4"></path>
+            <line x1="130" y1="25" x2="160" y2="25" stroke-width="1.3"></line><line x1="130" y1="34" x2="160" y2="34" stroke-width="1.3"></line>
+            <line x1="130" y1="146" x2="160" y2="146" stroke-width="1.3"></line><line x1="130" y1="155" x2="160" y2="155" stroke-width="1.3"></line>
+          </g>
+          <g transform="translate(365,70)" fill="none" stroke="#111">
+            <text x="35" y="-25" fill="#123b63" stroke="none" font-size="19" font-weight="700">Unterbrochene Ansicht</text>
+            <path d="M0 45 H110 L96 72 L118 98 L100 125 H0 Z" stroke-width="4"></path>
+            <path d="M205 45 H315 V125 H205 L219 98 L197 72 Z" stroke-width="4"></path>
+            <line x1="0" y1="85" x2="315" y2="85" stroke-width="1.4" stroke-dasharray="24 6 4 6"></line>
+            <text x="87" y="165" fill="#566276" stroke="none" font-size="15">verkürzt gezeichnet – volles Maß bleibt gültig</text>
+          </g>
+          <g transform="translate(745,70)" fill="none" stroke="#111">
+            <text x="45" y="-25" fill="#123b63" stroke="none" font-size="19" font-weight="700">Einzelheit Z · 2 : 1</text>
+            <path d="M0 140 V25 H145 V95 H95 V140 Z" stroke-width="4"></path>
+            <circle cx="107" cy="103" r="38" stroke-width="1.4"></circle><text x="128" y="72" fill="#123b63" stroke="none" font-size="18" font-weight="700">Z</text>
+            <path d="M205 155 V25 H335 V90 H285 V155 Z" stroke-width="4"></path><path d="M285 90 Q285 115 310 115" stroke-width="3"></path>
+          </g>
+          <g transform="translate(150,345)" fill="none" stroke="#111">
+            <text x="185" y="-25" fill="#123b63" stroke="none" font-size="19" font-weight="700">Ursprüngliche Form vor der Bearbeitung</text>
+            <rect x="0" y="0" width="600" height="90" stroke-width="4"></rect>
+            <path d="M-45 -28 H645 V118 H-45 Z" stroke-width="1.6" stroke-dasharray="24 6 4 6 4 6"></path>
+            <text x="625" y="112" fill="#566276" stroke="none" font-size="15">Strich-Zweipunktlinie</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="info warning"><strong>Schnittausnahmen:</strong> Rotationssymmetrische Teile wie Wellen, Bolzen und Achsen werden in Längsrichtung grundsätzlich nicht geschnitten dargestellt, solange keine umfangreiche Innenkontur einen Schnitt notwendig macht. Rippen, Stege und Speichen werden bei einem Längsschnitt nicht schraffiert. Bei Innenbohrungen kann stattdessen ein Teilschnitt zweckmäßig sein.</div>
+
+      <div class="task source-task">
+        <div class="task-head"><strong>Rechercheauftrag 6A · Schnittregeln abgleichen</strong><span class="tag required">Pflicht</span></div>
+        <div class="task-body">
+          <p><strong>Quelle:</strong> „1. Infos Technisches Zeichnen“, PDF-S. 4 (identisch wiederholt auf PDF-S. 5) / Buch-S. 490–491.</p>
+          <ol><li>Notiert den Unterschied zwischen Vollschnitt, Halbschnitt und Teilschnitt.</li><li>Findet zwei Teile, die in der Längsrichtung nicht geschnitten dargestellt werden.</li><li>Erklärt, warum ein Schnitt häufig klarer ist als viele verdeckte Kanten.</li></ol>
+          <label for="work6a">Eure Ergebnisse</label><textarea id="work6a" data-save="work6a"></textarea>
+          <details class="hint"><summary>Tipp 1</summary>Denkt an rotationssymmetrische Norm- und Maschinenelemente.</details>
+          <details class="solution"><summary>Vollständige Lösung</summary><p>Beim Vollschnitt wird das ganze Bauteil geschnitten, beim Halbschnitt eine Hälfte geschnitten und die andere als Ansicht gezeigt, beim Teilschnitt nur ein begrenzter Bereich. In Längsrichtung werden beispielsweise Wellen, Bolzen oder Achsen nicht geschnitten, sofern keine innere Geometrie einen Schnitt erfordert. Ein Schnitt zeigt Innenkonturen direkt als sichtbare Konturen und ermöglicht eine eindeutige Bemaßung, während viele verdeckte Linien unübersichtlich werden.</p></details>
+        </div>
+      </div>
+
+      <h3>Elemente der Bemaßung</h3>
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 820 390" role="img" aria-labelledby="dimTitle dimDesc">
+          <title id="dimTitle">Bemaßung einer rechteckigen Platte mit Bohrung</title><desc id="dimDesc">Platte mit Maßhilfslinien, Maßlinie, Maßpfeilen, Maßzahl und Durchmesserzeichen.</desc>
+          <defs><marker id="dimArrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="#111"></path></marker></defs>
+          <rect x="170" y="80" width="360" height="170" fill="none" stroke="#111" stroke-width="4"></rect><circle cx="380" cy="165" r="32" fill="none" stroke="#111" stroke-width="4"></circle>
+          <line x1="332" y1="165" x2="428" y2="165" stroke="#111" stroke-width="1.4" stroke-dasharray="24 6 4 6"></line><line x1="380" y1="117" x2="380" y2="213" stroke="#111" stroke-width="1.4" stroke-dasharray="24 6 4 6"></line>
+          <g class="dim-stage" data-stage="1" stroke="#111" stroke-width="1.3"><line x1="170" y1="265" x2="170" y2="320"></line><line x1="530" y1="265" x2="530" y2="320"></line></g>
+          <g class="dim-stage" data-stage="2" stroke="#111" stroke-width="1.3"><line x1="170" y1="305" x2="530" y2="305" marker-start="url(#dimArrow)" marker-end="url(#dimArrow)"></line></g>
+          <g class="dim-stage" data-stage="3"><text x="338" y="296" font-size="20">80</text><line x1="405" y1="140" x2="470" y2="95" stroke="#111" stroke-width="1.3" marker-start="url(#dimArrow)"></line><text x="476" y="92" font-size="20">⌀16</text></g>
+          <g font-size="17" fill="#146aa3"><text x="78" y="315">Maßhilfslinie</text><text x="292" y="344">Maßlinie + Pfeile</text><text x="488" y="66">Maßzahl mit ⌀</text></g>
+        </svg>
+      </div>
+      <div class="hotspots"><button type="button" data-dim-stage="1">1 Maßhilfslinien</button><button type="button" data-dim-stage="2">2 Maßlinie und Pfeile</button><button type="button" data-dim-stage="3">3 Maßzahlen</button><button type="button" data-dim-stage="all">Alles anzeigen</button></div>
+
+      <h4>Bestandteile und ihre Funktion</h4>
+      <table>
+        <thead><tr><th>Element</th><th>Darstellung</th><th>Funktion und Regel</th></tr></thead>
+        <tbody>
+          <tr><td>Maßhilfslinie</td><td>schmale Volllinie</td><td>Ordnet das Maß eindeutig Punkten, Kanten oder Achsen zu. Sie beginnt an der Kontur und ragt etwa 2 mm über die Maßlinie hinaus.</td></tr>
+          <tr><td>Maßlinie</td><td>schmale Volllinie mit Maßbegrenzungen</td><td>Zeigt Richtung und Ausdehnung des Maßes. Sie wird nicht als Körperkante benutzt und nicht unterbrochen.</td></tr>
+          <tr><td>Maßpfeil</td><td>schmaler, geschlossener und ausgefüllter Pfeil</td><td>Begrenzt die Maßstrecke. Bei wenig Platz dürfen Pfeile von außen auf die Maßhilfslinien zeigen.</td></tr>
+          <tr><td>Maßzahl</td><td>gut lesbare Normschrift über der Maßlinie</td><td>Gibt unabhängig vom Zeichnungsmaßstab das wirkliche Maß an. Sie muss von unten oder von rechts lesbar sein.</td></tr>
+          <tr><td>Hinweislinie</td><td>schmale schräge Volllinie, gegebenenfalls abgewinkelt</td><td>Ordnet Text oder Symbol zu: Pfeil an einer Kante, Punkt auf einer Fläche, ohne Endzeichen an einer anderen Linie.</td></tr>
+        </tbody>
+      </table>
+      <div class="info"><strong>Abstände als Zeichnungsrichtwerte:</strong> Die erste parallele Maßlinie liegt mindestens 10 mm von der Körperkante entfernt. Weitere parallele Maßlinien folgen mit mindestens 7 mm Abstand. Diese Abstände beziehen sich auf die Zeichnung, nicht auf das Bauteil.</div>
+
+      <h4>Vor jeder Maßzahl drei Fragen stellen</h4>
+      <ol class="step-list">
+        <li><strong>Notwendig?</strong> Wird dieses Maß für Funktion, Fertigung oder Prüfung benötigt?</li>
+        <li><strong>Noch nicht vorhanden?</strong> Ist dieselbe Größe nicht bereits direkt oder durch eine eindeutige Angabe festgelegt?</li>
+        <li><strong>Richtig platziert?</strong> Ist das Formelement in dieser Ansicht sichtbar und lässt sich die Maßangabe ohne Kreuzungen klar lesen?</li>
+      </ol>
+
+      <h3>Grund-, Form- und Lagemaße</h3>
+      <table class="level-table">
+        <thead><tr><th>Maßart</th><th>Frage</th><th>Beispiele</th></tr></thead>
+        <tbody><tr><td>Grundmaß</td><td>Wie groß ist der Grundkörper?</td><td>Länge, Breite, Höhe</td></tr><tr><td>Formmaß</td><td>Wie groß ist ein Formelement?</td><td>Bohrungsdurchmesser, Nutbreite, Radius, Fasengröße</td></tr><tr><td>Lagemaß</td><td>Wo befindet sich das Formelement?</td><td>Abstand des Bohrungsmittelpunkts zu Bezugskanten oder Symmetrieebenen</td></tr></tbody>
+      </table>
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 900 470" role="img" aria-labelledby="measureKindsTitle measureKindsDesc">
+          <title id="measureKindsTitle">Grund-, Form- und Lagemaße an einer Lochplatte</title>
+          <desc id="measureKindsDesc">Grüne Maße legen die Grundform fest, ein blaues Maß den Bohrungsdurchmesser und rote Maße die Bohrungslage.</desc>
+          <defs>
+            <marker id="greenArrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="#247554"></path></marker>
+            <marker id="blueArrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="#146aa3"></path></marker>
+            <marker id="redArrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="#9c3030"></path></marker>
+          </defs>
+          <rect x="190" y="85" width="430" height="210" fill="none" stroke="#111" stroke-width="4"></rect>
+          <circle cx="455" cy="190" r="38" fill="none" stroke="#111" stroke-width="4"></circle>
+          <line x1="400" y1="190" x2="510" y2="190" stroke="#111" stroke-width="1.4" stroke-dasharray="24 6 4 6"></line><line x1="455" y1="135" x2="455" y2="245" stroke="#111" stroke-width="1.4" stroke-dasharray="24 6 4 6"></line>
+          <g stroke="#247554" stroke-width="2" fill="none">
+            <line x1="190" y1="320" x2="190" y2="380"></line><line x1="620" y1="320" x2="620" y2="380"></line><line x1="190" y1="365" x2="620" y2="365" marker-start="url(#greenArrow)" marker-end="url(#greenArrow)"></line>
+            <line x1="645" y1="85" x2="700" y2="85"></line><line x1="645" y1="295" x2="700" y2="295"></line><line x1="684" y1="85" x2="684" y2="295" marker-start="url(#greenArrow)" marker-end="url(#greenArrow)"></line>
+          </g>
+          <text x="392" y="354" fill="#247554" font-size="20" font-weight="700">80</text><text x="696" y="198" fill="#247554" font-size="20" font-weight="700">40</text>
+          <g stroke="#9c3030" stroke-width="2" fill="none">
+            <line x1="190" y1="65" x2="190" y2="28"></line><line x1="455" y1="120" x2="455" y2="28"></line><line x1="190" y1="42" x2="455" y2="42" marker-start="url(#redArrow)" marker-end="url(#redArrow)"></line>
+            <line x1="150" y1="295" x2="115" y2="295"></line><line x1="400" y1="190" x2="115" y2="190"></line><line x1="128" y1="190" x2="128" y2="295" marker-start="url(#redArrow)" marker-end="url(#redArrow)"></line>
+          </g>
+          <text x="310" y="34" fill="#9c3030" font-size="20" font-weight="700">50</text><text x="95" y="250" fill="#9c3030" font-size="20" font-weight="700">20</text>
+          <line x1="480" y1="165" x2="555" y2="105" stroke="#146aa3" stroke-width="2" marker-start="url(#blueArrow)"></line><text x="562" y="102" fill="#146aa3" font-size="20" font-weight="700">⌀14</text>
+          <g font-size="17" font-weight="700">
+            <rect x="195" y="420" width="18" height="18" fill="#247554"></rect><text x="222" y="435" fill="#247554">Grundmaße</text>
+            <rect x="380" y="420" width="18" height="18" fill="#146aa3"></rect><text x="407" y="435" fill="#146aa3">Formmaß</text>
+            <rect x="545" y="420" width="18" height="18" fill="#9c3030"></rect><text x="572" y="435" fill="#9c3030">Lagemaße</text>
+          </g>
+        </svg>
+      </div>
+      <p>Die Einteilung hilft beim Prüfen auf Vollständigkeit: Ist der Grundkörper bestimmt? Ist jedes Formelement in seiner Größe bestimmt? Ist die Lage jedes Formelements von eindeutigen Bezugsebenen aus festgelegt?</p>
+
+      <h3>Maßbezüge und Maßketten</h3>
+      <p>Die Wahl des Bezugssystems beeinflusst Funktion, Fertigbarkeit und Prüfaufwand. Eine Bezugsebene ist eine funktional oder fertigungstechnisch sinnvolle Ausgangsfläche oder Symmetrieebene, von der Lagemaße ausgehen.</p>
+      <div class="grid-3">
+        <div class="card"><h4>Kettenbemaßung</h4><p>Maße schließen nacheinander an. Sie ist leicht zu zeichnen, kann aber zu einer Addition von Maßabweichungen führen. Deshalb nicht für kritische Funktionsabstände verwenden.</p></div>
+        <div class="card"><h4>Bezugsbemaßung</h4><p>Mehrere Maße gehen von derselben Bezugskante oder Symmetrieachse aus. Funktionsflächen und Bohrungen lassen sich eindeutig fertigen und prüfen.</p></div>
+        <div class="card"><h4>Koordinatenbemaßung</h4><p>Formelemente werden über Koordinaten von festgelegten Ursprüngen beschrieben. Sie eignet sich besonders für Lochbilder und CNC-orientierte Fertigung.</p></div>
+      </div>
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 1020 330" role="img" aria-labelledby="dimensionSystemsTitle dimensionSystemsDesc">
+          <title id="dimensionSystemsTitle">Ketten-, Bezugs- und Koordinatenbemaßung</title>
+          <desc id="dimensionSystemsDesc">Drei Platten mit Bohrungen zeigen verschiedene Arten, deren Lage festzulegen.</desc>
+          <defs><marker id="smallArrow" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto-start-reverse"><path d="M0,0 L7,3.5 L0,7 z" fill="#111"></path></marker></defs>
+          <g transform="translate(35,60)" fill="none" stroke="#111">
+            <text x="65" y="-25" fill="#123b63" stroke="none" font-size="19" font-weight="700">Kettenbemaßung</text>
+            <rect x="0" y="0" width="270" height="100" stroke-width="4"></rect><circle cx="65" cy="50" r="12" stroke-width="3"></circle><circle cx="140" cy="50" r="12" stroke-width="3"></circle><circle cx="220" cy="50" r="12" stroke-width="3"></circle>
+            <g stroke-width="1.2"><line x1="0" y1="120" x2="0" y2="170"></line><line x1="65" y1="120" x2="65" y2="170"></line><line x1="140" y1="120" x2="140" y2="170"></line><line x1="220" y1="120" x2="220" y2="170"></line><line x1="0" y1="150" x2="65" y2="150" marker-start="url(#smallArrow)" marker-end="url(#smallArrow)"></line><line x1="65" y1="150" x2="140" y2="150" marker-start="url(#smallArrow)" marker-end="url(#smallArrow)"></line><line x1="140" y1="150" x2="220" y2="150" marker-start="url(#smallArrow)" marker-end="url(#smallArrow)"></line></g>
+            <g fill="#111" stroke="none" font-size="15"><text x="25" y="142">20</text><text x="94" y="142">25</text><text x="173" y="142">25</text></g>
+          </g>
+          <g transform="translate(375,60)" fill="none" stroke="#111">
+            <text x="65" y="-25" fill="#123b63" stroke="none" font-size="19" font-weight="700">Bezugsbemaßung</text>
+            <rect x="0" y="0" width="270" height="100" stroke-width="4"></rect><circle cx="65" cy="50" r="12" stroke-width="3"></circle><circle cx="140" cy="50" r="12" stroke-width="3"></circle><circle cx="220" cy="50" r="12" stroke-width="3"></circle>
+            <g stroke-width="1.2"><line x1="0" y1="120" x2="0" y2="225"></line><line x1="65" y1="120" x2="65" y2="155"></line><line x1="140" y1="120" x2="140" y2="190"></line><line x1="220" y1="120" x2="220" y2="225"></line><line x1="0" y1="145" x2="65" y2="145" marker-start="url(#smallArrow)" marker-end="url(#smallArrow)"></line><line x1="0" y1="180" x2="140" y2="180" marker-start="url(#smallArrow)" marker-end="url(#smallArrow)"></line><line x1="0" y1="215" x2="220" y2="215" marker-start="url(#smallArrow)" marker-end="url(#smallArrow)"></line></g>
+            <g fill="#111" stroke="none" font-size="15"><text x="26" y="138">20</text><text x="62" y="173">45</text><text x="100" y="208">70</text></g>
+          </g>
+          <g transform="translate(715,60)" fill="none" stroke="#111">
+            <text x="55" y="-25" fill="#123b63" stroke="none" font-size="19" font-weight="700">Koordinaten</text>
+            <rect x="0" y="0" width="270" height="100" stroke-width="4"></rect><circle cx="65" cy="50" r="12" stroke-width="3"></circle><circle cx="140" cy="50" r="12" stroke-width="3"></circle><circle cx="220" cy="50" r="12" stroke-width="3"></circle>
+            <g stroke="#146aa3" stroke-width="2"><line x1="0" y1="115" x2="250" y2="115" marker-end="url(#smallArrow)"></line><line x1="-15" y1="100" x2="-15" y2="5" marker-end="url(#smallArrow)"></line></g>
+            <g fill="#111" stroke="none" font-size="15"><text x="45" y="145">(20|20)</text><text x="116" y="175">(45|20)</text><text x="193" y="205">(70|20)</text></g>
+          </g>
+        </svg>
+      </div>
+      <h3>Allgemeine Bemaßungsregeln</h3>
+      <ul>
+        <li>Alle für Funktion, Fertigung und Prüfung notwendigen Maße sind vorhanden – kein notwendiges Maß fehlt.</li>
+        <li>Jedes Maß wird nur einmal angegeben. Doppelte Maße können nach Änderungen widersprüchlich werden.</li>
+        <li>Maße stehen in der Ansicht, in der das Formelement am deutlichsten erkennbar ist. Verdeckte Kanten werden nicht bemaßt.</li>
+        <li>Maßlinien und Maßhilfslinien sind schmale Volllinien. Maßlinien stehen rechtwinklig zu Maßhilfslinien und werden nicht unterbrochen.</li>
+        <li>Maßlinien sollen sich nicht schneiden. Maßlinien und Maßhilfslinien sollen sich möglichst wenig kreuzen.</li>
+        <li>Als Richtwerte gelten: erste Maßlinie mindestens 10 mm von der Körperkante, parallele Maßlinien mindestens 7 mm voneinander; Maßhilfslinien ragen etwa 2 mm über die Maßlinie hinaus.</li>
+        <li>Maßzahlen sind von unten oder von rechts lesbar. Bei Maschinenbauzeichnungen gelten Maße in der Regel in mm; die Einheit steht nicht hinter jeder Maßzahl.</li>
+        <li>Durchmesser: ⌀; Radius: R; Kugelform zusätzlich mit S. Maßbezugsebenen ergeben sich aus Funktion oder Fertigung; Symmetrieebenen sind natürliche Bezüge.</li>
+        <li>Kettenmaße werden vermieden, wenn sich Einzeltoleranzen ungünstig addieren könnten. Funktionsmaße haben Vorrang.</li>
+      </ul>
+      <div class="info"><strong>Funktions-, fertigungs- und prüfgerecht:</strong> Eine Bemaßung muss das Zusammenpassen mit Nachbarteilen sichern, zum vorgesehenen Fertigungsverfahren passen und die Kontrolle der Maße ermöglichen. In der Praxis werden diese Ziele gegeneinander abgewogen; Funktionsmaße dürfen nicht verloren gehen.</div>
+      <div class="grid-3">
+        <div class="card"><h4>Funktionsgerecht</h4><p>Maße gehen von den Flächen und Achsen aus, die das Zusammenwirken bestimmen. Beispiel: Der Abstand zweier Befestigungsbohrungen wird direkt festgelegt, damit sie zum Gegenstück passen.</p></div>
+        <div class="card"><h4>Fertigungsgerecht</h4><p>Maße orientieren sich an Aufspannung, Werkzeugbewegung und Arbeitsfolge. Beispiel: Mehrere Absätze eines Drehteils werden von einer gemeinsamen Stirnfläche aus bemaßt.</p></div>
+        <div class="card"><h4>Prüfgerecht</h4><p>Maße lassen sich mit geeigneten Prüfmitteln unmittelbar erfassen. Verdeckte oder nur rechnerisch bestimmbare Prüfmaße werden vermieden.</p></div>
+      </div>
+
+      <h3>Formelemente eindeutig bemaßen</h3>
+      <table>
+        <thead><tr><th>Formelement</th><th>Angabe</th><th>Worauf achten?</th></tr></thead>
+        <tbody>
+          <tr><td>Bohrung / Zylinder</td><td>⌀ vor der Maßzahl, zum Beispiel ⌀12</td><td>Durchmesser in der Ansicht angeben, in der die Kreisform oder Zylinderform eindeutig zugeordnet werden kann.</td></tr>
+          <tr><td>Radius / Rundung</td><td>R vor der Maßzahl, zum Beispiel R5</td><td>Maßlinie zeigt in Richtung Mittelpunkt. Mittelpunkt nur kennzeichnen und bemaßen, wenn seine Lage benötigt wird.</td></tr>
+          <tr><td>Kugel</td><td>S⌀ beziehungsweise SR</td><td>Mit S klarstellen, dass eine Kugelform und nicht nur eine Kreisform gemeint ist.</td></tr>
+          <tr><td>Vierkant</td><td>□ vor der Maßzahl</td><td>Nur verwenden, wenn dadurch eine zusätzliche Ansicht eindeutig eingespart werden kann.</td></tr>
+          <tr><td>Schlüsselweite</td><td>SW, wenn nicht bereits der parallele Flächenabstand direkt angegeben wird</td><td>Maß bezieht sich auf gegenüberliegende parallele Flächen.</td></tr>
+          <tr><td>Fase</td><td>Fasenbreite und Winkel; bei 45° ist eine zusammengefasste Angabe möglich</td><td>Bei einem von 45° abweichenden Winkel müssen Breite beziehungsweise Durchmesser und Winkel eindeutig festgelegt werden.</td></tr>
+          <tr><td>Nut</td><td>Breite, Tiefe und Lage</td><td>Lage möglichst auf Nutmitte oder eine funktionale Bezugsebene beziehen; bei unsymmetrischen Nuten notwendige Winkel ergänzen.</td></tr>
+          <tr><td>Wiederholte Elemente</td><td>Anzahl × Formmaß sowie Teilungs- oder Lochkreisangabe</td><td>Anzahl, Größe und gleichmäßige beziehungsweise ungleichmäßige Lage vollständig festlegen.</td></tr>
+        </tbody>
+      </table>
+      <div class="info warning"><strong>Nicht aus der Zeichnung messen:</strong> Fertigungsmaße werden aus den Maßzahlen entnommen. Die gezeichnete Länge kann durch Maßstab, Druck oder Bildschirmdarstellung verändert sein.</div>
+
+      <div class="task source-task">
+        <div class="task-head"><strong>Rechercheauftrag 6B · Maßeintragung bestätigen</strong><span class="tag required">Pflicht</span></div>
+        <div class="task-body">
+          <p><strong>Quelle:</strong> „1. Infos Technisches Zeichnen“, PDF-S. 3 / Buch-S. 488–489.</p>
+          <ol><li>Findet Maßlinie, Maßhilfslinie, Maßzahl und Maßpfeil in einer Beispielzeichnung.</li><li>Notiert die Regeln zu Maßeinheit, Radius und Durchmesser.</li><li>Vergleicht die Regeln mit der Tabelle oder dem Stichwort „Bemaßung“ im TK.</li></ol>
+          <label for="work6b">Eure Ergebnisse und Fundstellen</label><textarea id="work6b" data-save="work6b"></textarea>
+          <details class="hint"><summary>Tipp 1</summary>Unterscheidet zwischen der Zahl selbst und den Linien, die sie einem Formelement zuordnen.</details>
+          <details class="solution"><summary>Vollständige Lösung</summary><p>Maßlinie und Maßhilfslinien sind schmale Volllinien; Maßpfeile begrenzen die Maßstrecke; die Maßzahl gibt das Wirkmaß an. Im Maschinenbau werden Maße in der Regel in Millimetern eingetragen, ohne jedes Mal „mm“ zu ergänzen. Durchmesser erhalten ⌀, Radien R. Die Maßangabe wird in der Ansicht platziert, in der das Element am klarsten erkennbar ist.</p></details>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="task-head"><strong>Übung 6C · Eine Bemaßung planen und begründen</strong><span class="tag required">Pflicht</span></div>
+        <div class="task-body">
+          <p>Eine Platte ist 80 mm lang, 40 mm breit und 8 mm dick. Sie besitzt eine Durchgangsbohrung ⌀14. Der Bohrungsmittelpunkt liegt 50 mm von der linken und 20 mm von der unteren Bezugskante entfernt.</p>
+          <ol>
+            <li><strong>Grundlage:</strong> Ordnet 80, 40, 8, ⌀14, 50 und 20 den Grund-, Form- oder Lagemaßen zu.</li>
+            <li><strong>Anwendung:</strong> Skizziert Vorder- und Draufsicht und verteilt alle Maße so, dass kein Maß doppelt vorkommt.</li>
+            <li><strong>Transfer:</strong> Begründet die Wahl der beiden Bezugskanten. Beschreibt, wie sich eine Maßkette auf die Bohrungslage auswirken könnte.</li>
+          </ol>
+          <label for="work6c">Eure Begründung</label><textarea id="work6c" data-save="work6c" placeholder="Maßarten, Ansichten, Bezugsebenen und Begründung …"></textarea>
+          <details class="hint"><summary>Hilfe 1 · Maßarten</summary>Die Abmessungen des Quaders bestimmen den Grundkörper. ⌀14 bestimmt die Form der Bohrung. Zwei Abstände bestimmen deren Lage.</details>
+          <details class="hint"><summary>Hilfe 2 · Ansicht</summary>Tragt ⌀14 und die Lagemaße in der Ansicht ein, in der die Bohrung als Kreis sichtbar ist. Die Plattendicke gehört in eine Ansicht, die diese Dicke sichtbar zeigt.</details>
+          <details class="solution"><summary>Vollständige Lösung</summary><p><strong>Grundmaße:</strong> 80, 40 und 8. <strong>Formmaß:</strong> ⌀14. <strong>Lagemaße:</strong> 50 und 20. In der Draufsicht stehen 80, 40, ⌀14 sowie die beiden Mittelpunktabstände; die Dicke 8 steht in der Vorder- oder Seitenansicht. Als Bezüge eignen sich zwei rechtwinklige Fertigungs- beziehungsweise Anlageflächen. Direkte Bezugsmaße verhindern, dass sich mehrere Einzelabweichungen einer Maßkette bis zur Bohrungsachse addieren.</p></details>
+        </div>
+      </div>
+
+      <fieldset class="quiz" data-correct="b" data-explain="Verdeckte Kanten werden nicht bemaßt. Ein Schnitt oder eine besser geeignete Ansicht zeigt das Element eindeutig.">
+        <legend>1. Wo soll ein Bohrungsdurchmesser eingetragen werden?</legend>
+        <label><input type="radio" name="q6a" value="a"> An einer verdeckten Kante in beliebiger Ansicht</label><label><input type="radio" name="q6a" value="b"> In der Ansicht oder im Schnitt, wo die Bohrung deutlich erkennbar ist</label><label><input type="radio" name="q6a" value="c"> Ausschließlich im Schriftfeld</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <fieldset class="quiz" data-correct="c" data-explain="⌀ bezeichnet den Durchmesser. R wird für einen Radius verwendet.">
+        <legend>2. Was bedeutet die Angabe ⌀16?</legend>
+        <label><input type="radio" name="q6b" value="a"> Radius 16 mm</label><label><input type="radio" name="q6b" value="b"> Fläche 16 mm²</label><label><input type="radio" name="q6b" value="c"> Durchmesser 16 mm</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <fieldset class="quiz" data-correct="a" data-explain="Die Lage eines Bohrungsmittelpunkts wird durch Lagemaße festgelegt.">
+        <legend>3. Zu welcher Maßart gehört der Abstand eines Bohrungsmittelpunkts von einer Bezugskante?</legend>
+        <label><input type="radio" name="q6c" value="a"> Lagemaß</label><label><input type="radio" name="q6c" value="b"> Formmaß</label><label><input type="radio" name="q6c" value="c"> Grundmaß</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <fieldset class="quiz" data-correct="b" data-explain="Im Halbschnitt trennt die Mittellinie die geschnittene Hälfte von der Ansichtshälfte.">
+        <legend>4. Welche Linie bildet beim Halbschnitt die Grenze zwischen Ansicht und Schnitt?</legend>
+        <label><input type="radio" name="q6d" value="a"> Breite Volllinie</label><label><input type="radio" name="q6d" value="b"> Mittellinie</label><label><input type="radio" name="q6d" value="c"> Maßlinie</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <fieldset class="quiz" data-correct="c" data-explain="In Hohlräumen wird kein Material durchtrennt; deshalb bleiben Bohrungen und Ausschnitte ohne Schraffur.">
+        <legend>5. Welche Fläche bleibt in einer Schnittansicht ohne Schraffur?</legend>
+        <label><input type="radio" name="q6e" value="a"> Jede Außenfläche</label><label><input type="radio" name="q6e" value="b"> Jede Fläche unterhalb der Mittellinie</label><label><input type="radio" name="q6e" value="c"> Ein von der Schnittebene getroffener Hohlraum</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <fieldset class="quiz" data-correct="a" data-explain="Bezugsmaße gehen von derselben funktionalen oder fertigungstechnischen Bezugsebene aus und vermeiden unnötige Toleranzketten.">
+        <legend>6. Welchen Vorteil hat eine Bezugsbemaßung?</legend>
+        <label><input type="radio" name="q6f" value="a"> Mehrere Lagen werden eindeutig von einer gemeinsamen Bezugsebene festgelegt.</label><label><input type="radio" name="q6f" value="b"> Alle Maße dürfen mehrfach eingetragen werden.</label><label><input type="radio" name="q6f" value="c"> Maßhilfslinien werden überflüssig.</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <fieldset class="quiz" data-correct="b" data-explain="Bei Kettenmaßen können sich die zulässigen Abweichungen der Einzelmaße bis zum Funktionsmaß addieren.">
+        <legend>7. Warum sind lange Maßketten für Funktionsmaße problematisch?</legend>
+        <label><input type="radio" name="q6g" value="a"> Weil die Maßzahlen zu klein werden.</label><label><input type="radio" name="q6g" value="b"> Weil sich Maßabweichungen mehrerer Einzelmaße addieren können.</label><label><input type="radio" name="q6g" value="c"> Weil Maßketten nur bei Kreisen erlaubt sind.</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <fieldset class="quiz" data-correct="c" data-explain="Die erste parallele Maßlinie wird mit einem Richtabstand von mindestens 10 mm von der Körperkante angeordnet.">
+        <legend>8. Welcher Richtwert gilt für den Abstand der ersten Maßlinie von der Körperkante?</legend>
+        <label><input type="radio" name="q6h" value="a"> 2 mm</label><label><input type="radio" name="q6h" value="b"> 7 mm</label><label><input type="radio" name="q6h" value="c"> 10 mm</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <button class="btn" type="button" data-grade-section>Wissen prüfen</button><span class="section-score" aria-live="polite"></span>
+      <p class="source"><strong>Zum Nachschlagen:</strong> Infos Technisches Zeichnen, PDF-S. 3–5 / Buch-S. 488–491; TK nach „Maßeintragung“ und „Bemaßungsregeln“.</p>
+      <div class="module-actions"><button class="btn secondary prev" type="button">Zurück</button><button class="btn success complete" type="button">Modul abschließen und weiter</button></div>
+    </section>
+
+    <section class="module" id="modul-7" data-title="Lesen">
+      <p class="eyebrow">Modul 7 · Zeichnungslesen und weiterführende Angaben</p>
+      <h2>Vom Überblick bis zu Oberfläche, Toleranz und Gewinde</h2>
+      <p class="lead">Eine Zeichnung wird nicht von links oben nach rechts unten „abgelesen“. Ihr erschließt sie in einer festen Reihenfolge und verbindet Geometrie, Maße und Fertigungsangaben zu einem Gesamtbild.</p>
+
+      <h3>Der Fünf-Schritte-Leseweg</h3>
+      <ol class="step-list">
+        <li><strong>Auftrag klären:</strong> Soll das Bauteil gefertigt, geprüft, montiert oder nur verstanden werden?</li>
+        <li><strong>Dokumentdaten erfassen:</strong> Zeichnungsart, Benennung, Werkstoff, Maßstab und Änderungsstand notieren.</li>
+        <li><strong>Geometrie erschließen:</strong> Hauptansicht erkennen, Ansichten gedanklich verbinden, Schnitt und Linienarten deuten.</li>
+        <li><strong>Maße strukturieren:</strong> Grund-, Form- und Lagemaße, Bezüge und Symbole zuordnen.</li>
+        <li><strong>Fertigung und Prüfung beurteilen:</strong> Oberflächen-, Toleranz-, Gewinde- oder Montageangaben einordnen; auf Vollständigkeit und Widersprüche prüfen.</li>
+      </ol>
+
+      <h3>Oberflächen – so grob wie möglich, so fein wie nötig</h3>
+      <p>Eine gefertigte Oberfläche ist nie ideal eben. Fertigungsverfahren, Werkstoff und Bearbeitungsparameter erzeugen Rauheit und Welligkeit. Oberflächen erfüllen Funktionen: Sie sollen beispielsweise dichten, gleiten, haften oder leiten. Eine unnötig feine Oberfläche verteuert die Fertigung.</p>
+      <div class="grid-2">
+        <div class="card"><h4>Ra · arithmetischer Mittenrauwert</h4><p>Beschreibt den Mittelwert der Beträge der Profilabweichungen innerhalb einer Messstrecke. Einzelne Spitzen wirken weniger stark.</p></div>
+        <div class="card"><h4>Rz · gemittelte Rautiefe</h4><p>Berücksichtigt Höhenunterschiede aus Spitzen und Tälern mehrerer Einzelmessstrecken. Ra und Rz dürfen nicht einfach ineinander umgerechnet werden.</p></div>
+      </div>
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 900 330" role="img" aria-labelledby="surfaceTitle surfaceDesc">
+          <title id="surfaceTitle">Rauheitsprofil und Oberflächensymbole</title><desc id="surfaceDesc">Oben ein welliges Profil um eine Mittellinie, unten drei grundlegende Oberflächensymbole.</desc>
+          <g transform="translate(55,45)">
+            <text x="0" y="-12" font-size="20" font-weight="700" fill="#123b63">Vereinfachtes Oberflächenprofil</text>
+            <line x1="0" y1="100" x2="790" y2="100" stroke="#738397" stroke-width="1.5" stroke-dasharray="7 6"></line>
+            <polyline points="0,97 35,72 70,115 105,88 140,128 175,83 210,103 245,61 280,121 315,92 350,133 385,78 420,108 455,69 490,117 525,91 560,125 595,76 630,104 665,65 700,119 735,87 790,100" fill="none" stroke="#146aa3" stroke-width="3"></polyline>
+            <text x="680" y="90" font-size="15" fill="#566276">Mittellinie</text>
+          </g>
+          <g transform="translate(120,220)" stroke="#111" fill="none" stroke-width="4">
+            <path d="M0 45 L30 0 L55 45"></path><text x="-25" y="80" fill="#123b63" stroke="none" font-size="16">Grundsymbol</text>
+          </g>
+          <g transform="translate(390,220)" stroke="#111" fill="none" stroke-width="4">
+            <path d="M0 45 L30 0 L55 45 M18 18 H70"></path><text x="-50" y="80" fill="#123b63" stroke="none" font-size="16">Materialabtrag erforderlich</text>
+          </g>
+          <g transform="translate(700,220)" stroke="#111" fill="none" stroke-width="4">
+            <path d="M0 45 L30 0 L55 45"></path><circle cx="30" cy="13" r="11"></circle><text x="-50" y="80" fill="#123b63" stroke="none" font-size="16">Materialabtrag unzulässig</text>
+          </g>
+        </svg>
+      </div>
+      <ul>
+        <li>Das Oberflächensymbol wird der betroffenen Fläche eindeutig zugeordnet und muss von unten oder rechts lesbar sein.</li>
+        <li>Es kann direkt an der sichtbaren Kante, an einer Maßhilfs- oder Hinweislinie oder gemeinsam mit einer Maßangabe stehen.</li>
+        <li>Wenn die gleiche Anforderung für alle Flächen gilt, kann eine Sammelangabe in der Nähe des Schriftfelds verwendet werden.</li>
+        <li><strong>Merksatz:</strong> Oberflächen nicht feiner fordern, als es Funktion und Fertigbarkeit erfordern.</li>
+      </ul>
+      <div class="info warning"><strong>Normhinweis:</strong> Für konkrete Prüfungs- oder Fertigungswerte gilt die Ausgabe eures Tabellenbuchs beziehungsweise die im Unterricht vereinbarte Normfassung. Die grundlegende Bedeutung der Symbole bleibt hier Lerngegenstand.</div>
+
+      <h3>Toleranzen – warum ein Nennmaß allein nicht genügt</h3>
+      <p>Kein Fertigungsverfahren erzeugt ein Maß mathematisch exakt. Deshalb wird ein zulässiger Bereich festgelegt. Das <strong>Nennmaß</strong> ist die Sollangabe, oberes und unteres Grenzmaß begrenzen die erlaubte Größe. Ihre Differenz ist die <strong>Maßtoleranz</strong>. Ein Istmaß innerhalb der Grenzmaße ist hinsichtlich dieses Maßes zulässig.</p>
+      <div class="info advanced"><strong>Abgrenzung:</strong> Details zu Abmaßen, Passungen sowie Form- und Lagetoleranzen gehören in einen Aufbaukurs. Für diesen Kurs müsst ihr die Funktion einer Toleranz erklären und Toleranzangaben als Prüfanforderung erkennen können.</div>
+
+      <h3>Gewinde lesen und darstellen</h3>
+      <p>Gewinde können Bewegung übertragen oder Bauteile lösbar verbinden. Sie werden unter anderem nach Profilform, Gangzahl und Drehsinn unterschieden. In technischen Zeichnungen werden Gewinde vereinfacht dargestellt; die vollständige Form jeder Windung wird nicht gezeichnet.</p>
+      <div class="grid-2">
+        <div class="card"><h4>Bezeichnung lesen</h4><p><strong>M10</strong> bezeichnet ein metrisches ISO-Regelgewinde mit 10 mm Nenndurchmesser. Bei einem Feingewinde wird die Steigung ergänzt, zum Beispiel <strong>M10 × 1</strong>. Ein Linksgewinde benötigt eine zusätzliche Kennzeichnung.</p></div>
+        <div class="card"><h4>Darstellung verstehen</h4><p>Beim Außengewinde wird der Nenndurchmesser als breite, der Kerndurchmesser als schmale Volllinie dargestellt. Beim Innengewinde ist die Zuordnung entsprechend der vereinfachten Gewindedarstellung umgekehrt. Im Schnitt hat die Schraffur Vorrang bis zur Gewindekontur.</p></div>
+      </div>
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 900 300" role="img" aria-labelledby="threadTitle threadDesc">
+          <title id="threadTitle">Vereinfachte Darstellung von Außen- und Innengewinde</title><desc id="threadDesc">Links Außengewinde mit breitem Nenndurchmesser und schmalem Kerndurchmesser, rechts geschnittenes Innengewinde.</desc>
+          <g transform="translate(70,70)">
+            <text x="80" y="-25" font-size="20" font-weight="700" fill="#123b63">Außengewinde</text>
+            <line x1="0" y1="20" x2="320" y2="20" stroke="#111" stroke-width="5"></line><line x1="0" y1="150" x2="320" y2="150" stroke="#111" stroke-width="5"></line>
+            <line x1="0" y1="48" x2="275" y2="48" stroke="#111" stroke-width="1.5"></line><line x1="0" y1="122" x2="275" y2="122" stroke="#111" stroke-width="1.5"></line>
+            <line x1="275" y1="20" x2="275" y2="150" stroke="#111" stroke-width="1.5"></line><line x1="320" y1="20" x2="320" y2="150" stroke="#111" stroke-width="5"></line>
+            <text x="15" y="190" font-size="15" fill="#146aa3">breit: Nenndurchmesser · schmal: Kerndurchmesser</text>
+          </g>
+          <g transform="translate(520,70)">
+            <text x="80" y="-25" font-size="20" font-weight="700" fill="#123b63">Innengewinde</text>
+            <rect x="0" y="0" width="300" height="170" fill="#edf3f7" stroke="#111" stroke-width="4"></rect>
+            <rect x="0" y="48" width="260" height="74" fill="#fff"></rect>
+            <line x1="0" y1="48" x2="260" y2="48" stroke="#111" stroke-width="5"></line><line x1="0" y1="122" x2="260" y2="122" stroke="#111" stroke-width="5"></line>
+            <line x1="0" y1="20" x2="285" y2="20" stroke="#111" stroke-width="1.5"></line><line x1="0" y1="150" x2="285" y2="150" stroke="#111" stroke-width="1.5"></line>
+            <path d="M285 20 V55 H260 M285 150 V115 H260" fill="none" stroke="#111" stroke-width="1.5"></path>
+          </g>
+        </svg>
+      </div>
+
+      <h3>Schraubenverbindungen richtig nachschlagen</h3>
+      <table>
+        <thead><tr><th>Verbindung</th><th>Merkmal</th><th>Was muss bestimmt werden?</th></tr></thead>
+        <tbody>
+          <tr><td>Durchsteckverbindung</td><td>Schraube geht durch Durchgangsbohrungen; Mutter erzeugt die Klemmung.</td><td>Durchgangsbohrung, Klemmlänge, Scheiben/Mutter, nächstpassende Normlänge.</td></tr>
+          <tr><td>Einschraubverbindung</td><td>Schraube greift in ein Innengewinde des unteren Bauteils.</td><td>Durchgangsbohrung oben, Einschraubtiefe, Gewindetiefe, Kernloch-/Bohrtiefe, Schraubenlänge.</td></tr>
+          <tr><td>Versenkte Verbindung</td><td>Schraubenkopf liegt ganz oder teilweise in einer Senkung.</td><td>Senkungsart, Durchmesser, Tiefe/Winkel und Oberflächen-/Toleranzangaben aus Tabelle.</td></tr>
+        </tbody>
+      </table>
+      <div class="info"><strong>Arbeitsstrategie:</strong> Verbindung skizzieren → Werkstoffe und Nenndurchmesser klären → benötigte Tabellenwerte nachschlagen → Mindestlängen berechnen → auf lieferbare Normlänge aufrunden → Gewinde- und Bohrungstiefe prüfen → Zeichnung bemaßen.</div>
+
+      <div class="task source-task">
+        <div class="task-head"><strong>Rechercheauftrag 7A · Oberflächen und Gewinde</strong><span class="tag required">Pflicht</span></div>
+        <div class="task-body">
+          <p><strong>Quelle:</strong> „1. Infos Technisches Zeichnen“, PDF-S. 6 (identisch wiederholt auf PDF-S. 7) / Buch-S. 494–495.</p>
+          <ol><li>Ordnet Grundsymbol, „Materialabtrag erforderlich“ und „Materialabtrag unzulässig“ zu.</li><li>Findet die vereinfachte Darstellung von Außen- und Innengewinde.</li><li>Erklärt den Unterschied zwischen Gewindelänge und nutzbarer Einschraublänge.</li></ol>
+          <label for="work7a">Eure Ergebnisse</label><textarea id="work7a" data-save="work7a"></textarea>
+          <details class="hint"><summary>Tipp 1</summary>Achtet beim Gewinde auf breite und schmale Linien – nicht auf gezeichnete Schraubenwindungen.</details>
+          <details class="solution"><summary>Vollständige Lösung</summary><p>Das Grundsymbol legt eine Oberfläche fest, ohne das Fertigungsverfahren allein zu bestimmen. Der Querstrich kennzeichnet erforderlichen Materialabtrag, der Kreis unzulässigen Materialabtrag. Gewinde werden mit Nenn- und Kerndurchmesserlinien vereinfacht dargestellt. Die Gewindelänge umfasst den vollständig ausgebildeten Gewindebereich; die tatsächlich tragende Einschraublänge kann wegen Anschnitt, Grund und Sicherheitszuschlägen kleiner sein und muss mit den Tabellenwerten geprüft werden.</p></details>
+        </div>
+      </div>
+
+      <div class="task source-task">
+        <div class="task-head"><strong>Rechercheauftrag 7B · Schraube, Mutter, Senkung</strong><span class="tag required">Pflicht</span></div>
+        <div class="task-body">
+          <p><strong>Quellen:</strong> „1. Infos Technisches Zeichnen“, PDF-S. 8 (identisch wiederholt auf PDF-S. 9) / Buch-S. 496–497; „2. TK Metall- und Bautechnik TB“ über die Stichworte <em>Durchgangsbohrungen</em>, <em>Senkungen</em>, <em>Schraubenlängen</em>.</p>
+          <ol><li>Sucht eine Zylinderkopfschraube und eine Senkschraube. Beschreibt den Unterschied ihrer Senkungen.</li><li>Notiert, welche Größen eine Senkung eindeutig festlegen.</li><li>Findet im TK die Tabelle für eine Schraube M4 und notiert die Seite eurer Ausgabe.</li></ol>
+          <label for="work7b">Eure Fundstellen und Ergebnisse</label><textarea id="work7b" data-save="work7b"></textarea>
+          <details class="hint"><summary>Tipp 1</summary>Eine zylindrische Kopfsenkung wird anders beschrieben als eine kegelige Senkung für einen Senkkopf.</details>
+          <details class="solution"><summary>Vollständige Lösung</summary><p>Eine Zylinderkopfschraube benötigt typischerweise eine zylindrische Senkung mit Senkungsdurchmesser und -tiefe. Eine Senkschraube benötigt eine kegelige Senkung mit Durchmessern beziehungsweise Tiefe und dem passenden Senkwinkel. Die konkreten Tabellenwerte hängen von Schraubenform, Norm, Nenndurchmesser und Reihenwahl ab; deshalb müssen sie im TK nachgeschlagen und mit der verwendeten Ausgabe dokumentiert werden.</p></details>
+        </div>
+      </div>
+
+      <h3>Baugruppen und Zeichnungskontrolle</h3>
+      <p>In einer Baugruppenzeichnung stehen Einbaulage und Zusammenwirken im Mittelpunkt. Positionsnummern, Stückliste, Haupt- und Anschlussmaße ergänzen sich. Normteile werden nicht durch eigene Fertigungszeichnungen neu definiert, sondern durch eindeutige Normbezeichnungen ausgewählt. Vor Freigabe wird die gesamte Zeichnung kontrolliert.</p>
+      <div class="task source-task">
+        <div class="task-head"><strong>Rechercheauftrag 7C · Baugruppe lesen</strong><span class="tag optional">Vertiefung</span></div>
+        <div class="task-body">
+          <p><strong>Quelle:</strong> „1. Infos Technisches Zeichnen“, PDF-S. 10 / Buch-S. 498–499.</p>
+          <ol><li>Wählt drei Positionsnummern und ordnet sie den Stücklistenzeilen zu.</li><li>Unterscheidet Fertigungs-, Norm- und Kaufteile.</li><li>Notiert zwei Angaben, die an einer Baugruppe geprüft werden müssen.</li></ol>
+          <details class="solution"><summary>Erwartungshorizont</summary><p>Die Positionsnummer muss eindeutig zur Stücklistenzeile führen. Fertigungsteile besitzen eine Zeichnungs-/Identnummer, Normteile eine vollständige Normbezeichnung, Kaufteile eine Bestellangabe. Geprüft werden beispielsweise Vollständigkeit der Teile, Einbaulage, Anschlussmaße, Kollisionsfreiheit und eindeutige Stücklistenangaben.</p></details>
+        </div>
+      </div>
+
+      <fieldset class="quiz" data-correct="b" data-explain="Ra und Rz beschreiben unterschiedliche Merkmale des Rauheitsprofils und können nicht einfach ineinander umgerechnet werden.">
+        <legend>1. Welche Aussage zu Ra und Rz ist richtig?</legend>
+        <label><input type="radio" name="q7a" value="a"> Beide Werte sind immer identisch.</label><label><input type="radio" name="q7a" value="b"> Sie beschreiben Rauheit unterschiedlich und sind nicht direkt umrechenbar.</label><label><input type="radio" name="q7a" value="c"> Rz bezeichnet grundsätzlich den Bauteilradius.</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <fieldset class="quiz" data-correct="c" data-explain="Die Toleranz beschreibt den zulässigen Bereich zwischen oberem und unterem Grenzmaß.">
+        <legend>2. Was beschreibt eine Maßtoleranz?</legend>
+        <label><input type="radio" name="q7b" value="a"> Die Farbe des Bauteils</label><label><input type="radio" name="q7b" value="b"> Nur das Nennmaß</label><label><input type="radio" name="q7b" value="c"> Den zulässigen Größenbereich eines Maßes</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <fieldset class="quiz" data-correct="a" data-explain="M10 × 1 bezeichnet ein metrisches Gewinde mit 10 mm Nenndurchmesser und 1 mm Steigung.">
+        <legend>3. Was bedeutet M10 × 1?</legend>
+        <label><input type="radio" name="q7c" value="a"> Metrisches Gewinde, 10 mm Nenndurchmesser, 1 mm Steigung</label><label><input type="radio" name="q7c" value="b"> Zehn Gewinde mit je 1 mm Länge</label><label><input type="radio" name="q7c" value="c"> Metrisches Gewinde mit 1 mm Nenndurchmesser</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <fieldset class="quiz" data-correct="b" data-explain="Bei der Einschraubverbindung greift die Schraube in ein Innengewinde eines Bauteils.">
+        <legend>4. Was kennzeichnet eine Einschraubverbindung?</legend>
+        <label><input type="radio" name="q7d" value="a"> Sie benötigt immer eine Mutter.</label><label><input type="radio" name="q7d" value="b"> Die Schraube greift in ein Innengewinde des Bauteils.</label><label><input type="radio" name="q7d" value="c"> Die Schraube darf keine Klemmkraft erzeugen.</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <button class="btn" type="button" data-grade-section>Wissen prüfen</button><span class="section-score" aria-live="polite"></span>
+      <p class="source"><strong>Zum Nachschlagen:</strong> Infos Technisches Zeichnen, PDF-S. 6–10 / Buch-S. 494–499; TK nach den genannten Stichworten.</p>
+      <div class="module-actions"><button class="btn secondary prev" type="button">Zurück</button><button class="btn success complete" type="button">Modul abschließen und weiter</button></div>
+    </section>
+
+    <section class="module" id="modul-8" data-title="Fehler">
+      <p class="eyebrow">Modul 8 · Fehleranalyse und Transfer</p>
+      <h2>Prüfen, konstruieren und verbessern</h2>
+      <p>Ein technischer Fehler ist nicht nur „falsch“. Eine gute Kontrolle benennt die betroffene Regel, erklärt die Auswirkung und schlägt eine konkrete Verbesserung vor.</p>
+
+      <h3>Typische Fehler erkennen</h3>
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 920 390" role="img" aria-labelledby="errorTitle errorDesc">
+          <title id="errorTitle">Fehlerhafte Bemaßung einer Platte</title><desc id="errorDesc">Platte mit doppelt eingetragener Gesamtlänge, fehlender Mittellinie, Maß an verdeckter Kante und unvollständigem Schriftfeld.</desc>
+          <defs><marker id="errArrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="#111"></path></marker></defs>
+          <rect x="130" y="70" width="400" height="180" fill="none" stroke="#111" stroke-width="4"></rect>
+          <g stroke="#111" stroke-width="1.8" stroke-dasharray="12 8"><line x1="130" y1="135" x2="530" y2="135"></line><line x1="130" y1="185" x2="530" y2="185"></line></g>
+          <g stroke="#111" stroke-width="1.3"><line x1="130" y1="270" x2="130" y2="320"></line><line x1="530" y1="270" x2="530" y2="320"></line><line x1="130" y1="305" x2="530" y2="305" marker-start="url(#errArrow)" marker-end="url(#errArrow)"></line><line x1="130" y1="338" x2="530" y2="338" marker-start="url(#errArrow)" marker-end="url(#errArrow)"></line></g>
+          <text x="317" y="297" font-size="20">80</text><text x="317" y="332" font-size="20">80</text>
+          <line x1="285" y1="135" x2="285" y2="185" stroke="#111" stroke-width="1.3" marker-start="url(#errArrow)" marker-end="url(#errArrow)"></line><text x="294" y="165" font-size="18">⌀12</text>
+          <rect x="590" y="250" width="250" height="85" fill="none" stroke="#111"></rect><text x="605" y="280" font-size="16">Benennung: Halter</text><text x="605" y="310" font-size="16">Werkstoff: —</text>
+          <g fill="#9c3030" font-size="25" font-weight="800"><text x="550" y="338">1</text><text x="350" y="155">2</text><text x="325" y="100">3</text><text x="850" y="310">4</text></g>
+        </svg>
+      </div>
+      <div class="grid-2">
+        <div class="card"><strong>1 · Doppeltes Maß</strong><p>Die Gesamtlänge darf nur einmal angegeben werden.</p></div>
+        <div class="card"><strong>2 · Maß an verdeckter Form</strong><p>Die Bohrung braucht eine sichtbare Ansicht oder einen Schnitt.</p></div>
+        <div class="card"><strong>3 · Fehlende Mittellinie</strong><p>Die Achse der Bohrung muss dargestellt werden.</p></div>
+        <div class="card"><strong>4 · Unvollständiges Schriftfeld</strong><p>Werkstoff und weitere geforderte Daten fehlen.</p></div>
+      </div>
+
+      <fieldset class="quiz" data-correct="b" data-explain="Ein notwendiges Maß wird nur einmal angegeben. Doppelte Maße können bei Änderungen widersprüchlich werden.">
+        <legend>1. Die Gesamtlänge steht in Vorder- und Draufsicht.</legend>
+        <label><input type="radio" name="q8a" value="a"> richtig</label><label><input type="radio" name="q8a" value="b"> fehlerhaft</label><p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <fieldset class="quiz" data-correct="a" data-explain="Sichtbare Außenkanten werden als breite Volllinien dargestellt.">
+        <legend>2. Sichtbare Außenkanten sind als breite Volllinien gezeichnet.</legend>
+        <label><input type="radio" name="q8b" value="a"> richtig</label><label><input type="radio" name="q8b" value="b"> fehlerhaft</label><p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <fieldset class="quiz" data-correct="b" data-explain="Verdeckte Kanten werden nicht bemaßt. Wählt eine Ansicht oder einen Schnitt, in dem die Form sichtbar ist.">
+        <legend>3. Eine Bohrung wird an ihren verdeckten Kanten bemaßt.</legend>
+        <label><input type="radio" name="q8c" value="a"> richtig</label><label><input type="radio" name="q8c" value="b"> fehlerhaft</label><p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <button class="btn" type="button" data-grade-section>Fehlercheck auswerten</button><span class="section-score" aria-live="polite"></span>
+
+      <h3>Abschlussprojekt · Universalhalter für 3D-Druck oder Werkstatt</h3>
+      <div class="info"><strong>Funktion:</strong> Der Halter soll als einfache Aufnahme für einen Sensor oder ein kleines Führungsbauteil dienen. Zuerst wird er als PLA-Prototyp gedruckt; die gleiche Geometrie könnte später nach angepasster Werkstoffwahl in der Werkstatt gefertigt werden.</div>
+      <table>
+        <thead><tr><th>Formelement</th><th>Abmessungen</th><th>Lage</th></tr></thead>
+        <tbody>
+          <tr><td>Grundplatte</td><td>80 × 50 × 10 mm</td><td>Bezugskörper</td></tr>
+          <tr><td>Aufsatz</td><td>40 × 30 × 15 mm</td><td>30 mm von links; in der Breite mittig, also je 10 mm Rand</td></tr>
+          <tr><td>Durchgangsbohrung, senkrecht</td><td>⌀12</td><td>Mittelpunkt 50 mm von links und 25 mm von der Vorderkante</td></tr>
+          <tr><td>Gesamthöhe</td><td>25 mm</td><td>10 mm Grundplatte + 15 mm Aufsatz</td></tr>
+        </tbody>
+      </table>
+      <div class="task">
+        <div class="task-head"><strong>Arbeitsauftrag 8A · Fertigungszeichnung erstellen</strong><span class="tag required">Pflicht</span></div>
+        <div class="task-body">
+          <ol>
+            <li>Skizziert das Bauteil räumlich und kennzeichnet die Bohrungsachse.</li>
+            <li>Wählt geeignete Ansichten und ordnet sie nach Projektionsmethode 1 an.</li>
+            <li>Zeichnet sichtbare, verdeckte und Mittellinien korrekt.</li>
+            <li>Tragt Grund-, Form- und Lagemaße vollständig und jeweils nur einmal ein.</li>
+            <li>Ergänzt ein Schriftfeld mit Benennung „Universalhalter“, Werkstoff „PLA“ und Maßstab 1:1.</li>
+            <li>Prüft die Zeichnung zunächst selbst und danach mit einer Lernpartnerin oder einem Lernpartner.</li>
+          </ol>
+          <details class="hint"><summary>Tipp 1 · Ansichtswahl</summary>In der Draufsicht ist die senkrechte Bohrung als Kreis sichtbar. Die Vorderansicht zeigt Grundplatte und Aufsatz deutlich.</details>
+          <details class="hint"><summary>Tipp 2 · Maße sortieren</summary>Grundmaße: 80, 50, 10 und Gesamthöhe 25. Formmaße: 40, 30, 15 und ⌀12. Lagemaße: 30, 10 beziehungsweise mittige Lage sowie 50 und 25 für die Bohrung.</details>
+          <details class="hint"><summary>Tipp 3 · Vereinfachen</summary>Für Einsteiger: Zeichnet zuerst nur Vorder- und Draufsicht. Prüft danach, ob die Seitenansicht für eine vollständig eindeutige Darstellung noch nötig ist.</details>
+        </div>
+      </div>
+
+      <h3>Musterlösung</h3>
+      <details class="solution"><summary>Vollständige Musterzeichnung anzeigen</summary>
+        <p>Die folgende Darstellung zeigt eine technisch stimmige Lösung. Andere eindeutige Maßanordnungen sind möglich, wenn keine Maße fehlen oder doppelt vorkommen.</p>
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 1080 720" role="img" aria-labelledby="solutionTitle solutionDesc">
+            <title id="solutionTitle">Musterzeichnung Universalhalter</title><desc id="solutionDesc">Vorderansicht, Draufsicht und Seitenansicht mit Maßen für Grundplatte, Aufsatz und senkrechte Durchgangsbohrung.</desc>
+            <defs><marker id="solArrow" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto-start-reverse"><path d="M0,0 L7,3.5 L0,7 z" fill="#111"></path></marker></defs>
+            <rect x="15" y="15" width="1050" height="690" fill="#fff" stroke="#111" stroke-width="2"></rect>
+            <g transform="translate(130,95)">
+              <text x="150" y="-25" font-size="21" font-weight="700">Vorderansicht</text>
+              <path d="M0 150 V110 H150 V50 H350 V110 H400 V150 Z" fill="none" stroke="#111" stroke-width="4"></path>
+              <g stroke="#111" stroke-width="1.6" stroke-dasharray="12 8"><line x1="220" y1="50" x2="220" y2="150"></line><line x1="280" y1="50" x2="280" y2="150"></line></g>
+              <line x1="250" y1="35" x2="250" y2="165" stroke="#111" stroke-width="1.3" stroke-dasharray="24 6 4 6"></line>
+              <g stroke="#111" stroke-width="1.2"><line x1="0" y1="170" x2="0" y2="210"></line><line x1="400" y1="170" x2="400" y2="210"></line><line x1="0" y1="198" x2="400" y2="198" marker-start="url(#solArrow)" marker-end="url(#solArrow)"></line></g><text x="190" y="190" font-size="18">80</text>
+              <g stroke="#111" stroke-width="1.2"><line x1="150" y1="28" x2="150" y2="3"></line><line x1="350" y1="28" x2="350" y2="3"></line><line x1="150" y1="12" x2="350" y2="12" marker-start="url(#solArrow)" marker-end="url(#solArrow)"></line></g><text x="241" y="4" font-size="18">40</text>
+              <g stroke="#111" stroke-width="1.2"><line x1="420" y1="50" x2="462" y2="50"></line><line x1="420" y1="150" x2="462" y2="150"></line><line x1="450" y1="50" x2="450" y2="150" marker-start="url(#solArrow)" marker-end="url(#solArrow)"></line></g><text x="458" y="105" font-size="18">25</text>
+              <g stroke="#111" stroke-width="1.2"><line x1="-20" y1="110" x2="-58" y2="110"></line><line x1="-20" y1="150" x2="-58" y2="150"></line><line x1="-45" y1="110" x2="-45" y2="150" marker-start="url(#solArrow)" marker-end="url(#solArrow)"></line></g><text x="-78" y="135" font-size="18">10</text>
+            </g>
+            <g transform="translate(130,410)">
+              <text x="150" y="-25" font-size="21" font-weight="700">Draufsicht</text>
+              <rect x="0" y="0" width="400" height="250" fill="none" stroke="#111" stroke-width="4"></rect><rect x="150" y="50" width="200" height="150" fill="none" stroke="#111" stroke-width="3"></rect>
+              <circle cx="250" cy="125" r="30" fill="none" stroke="#111" stroke-width="4"></circle><line x1="205" y1="125" x2="295" y2="125" stroke="#111" stroke-width="1.3" stroke-dasharray="24 6 4 6"></line><line x1="250" y1="80" x2="250" y2="170" stroke="#111" stroke-width="1.3" stroke-dasharray="24 6 4 6"></line>
+              <line x1="275" y1="100" x2="330" y2="55" stroke="#111" stroke-width="1.2" marker-start="url(#solArrow)"></line><text x="338" y="52" font-size="18">⌀12</text>
+              <g stroke="#111" stroke-width="1.2"><line x1="-20" y1="0" x2="-62" y2="0"></line><line x1="-20" y1="250" x2="-62" y2="250"></line><line x1="-48" y1="0" x2="-48" y2="250" marker-start="url(#solArrow)" marker-end="url(#solArrow)"></line></g><text x="-82" y="132" font-size="18">50</text>
+              <g stroke="#111" stroke-width="1.2"><line x1="150" y1="272" x2="150" y2="315"></line><line x1="250" y1="272" x2="250" y2="315"></line><line x1="150" y1="300" x2="250" y2="300" marker-start="url(#solArrow)" marker-end="url(#solArrow)"></line></g><text x="190" y="292" font-size="18">20</text>
+              <g stroke="#111" stroke-width="1.2"><line x1="0" y1="272" x2="0" y2="348"></line><line x1="250" y1="322" x2="250" y2="348"></line><line x1="0" y1="338" x2="250" y2="338" marker-start="url(#solArrow)" marker-end="url(#solArrow)"></line></g><text x="116" y="330" font-size="18">50</text>
+            </g>
+            <g transform="translate(720,95)">
+              <text x="10" y="-25" font-size="21" font-weight="700">Seitenansicht von links</text>
+              <path d="M0 150 V110 H50 V50 H200 V110 H250 V150 Z" fill="none" stroke="#111" stroke-width="4"></path>
+              <g stroke="#111" stroke-width="1.6" stroke-dasharray="12 8"><line x1="95" y1="50" x2="95" y2="150"></line><line x1="155" y1="50" x2="155" y2="150"></line></g><line x1="125" y1="35" x2="125" y2="165" stroke="#111" stroke-width="1.3" stroke-dasharray="24 6 4 6"></line>
+              <g stroke="#111" stroke-width="1.2"><line x1="0" y1="172" x2="0" y2="215"></line><line x1="250" y1="172" x2="250" y2="215"></line><line x1="0" y1="202" x2="250" y2="202" marker-start="url(#solArrow)" marker-end="url(#solArrow)"></line></g><text x="116" y="194" font-size="18">50</text>
+            </g>
+            <g transform="translate(700,530)">
+              <rect x="0" y="0" width="350" height="155" fill="none" stroke="#111"></rect><line x1="0" y1="45" x2="350" y2="45" stroke="#111"></line><line x1="0" y1="90" x2="350" y2="90" stroke="#111"></line><line x1="220" y1="0" x2="220" y2="155" stroke="#111"></line>
+              <text x="12" y="29" font-size="17">Universalhalter</text><text x="232" y="29" font-size="17">Maßstab 1:1</text><text x="12" y="74" font-size="17">Werkstoff: PLA</text><text x="232" y="74" font-size="17">Einheit: mm</text><text x="12" y="119" font-size="15">Gezeichnet: __________</text><text x="232" y="119" font-size="15">Datum: ________</text>
+            </g>
+          </svg>
+        </div>
+      </details>
+
+      <h3>Partnerkontrolle</h3>
+      <div class="checklist">
+        <label><input type="checkbox"> Die gewählten Ansichten stellen die Form eindeutig dar.</label>
+        <label><input type="checkbox"> Vorder-, Drauf- und Seitenansicht sind nach Projektionsmethode 1 angeordnet.</label>
+        <label><input type="checkbox"> Sichtbare, verdeckte und Mittellinien sind korrekt unterschieden.</label>
+        <label><input type="checkbox"> Alle Grund-, Form- und Lagemaße sind vorhanden.</label>
+        <label><input type="checkbox"> Kein Maß ist doppelt, widersprüchlich oder an einer verdeckten Kante eingetragen.</label>
+        <label><input type="checkbox"> Schriftfeld und Maßstab sind vollständig.</label>
+        <label><input type="checkbox"> Eine andere Person könnte das Bauteil ohne Rückfrage modellieren oder fertigen.</label>
+      </div>
+      <details class="advanced"><summary>Zusatz für schnelle Lernende</summary><p>Ändert den Halter so, dass er mit zwei Schrauben auf einer Grundfläche befestigt werden kann. Legt Bohrungsart und Lage fest, recherchiert im TK passende Durchgangsbohrungen und erstellt eine Änderungszeichnung. Begründet außerdem, ob für den 3D-Druck andere Bohrungsmaße sinnvoll sein könnten als für eine spanende Fertigung.</p></details>
+
+      <p class="source">Die Musterzeichnung wurde für diesen Kurs erstellt und geometrisch auf die Aufgabenmaße abgestimmt.</p>
+      <div class="module-actions"><button class="btn secondary prev" type="button">Zurück</button><button class="btn success complete" type="button">Modul abschließen und weiter</button></div>
+    </section>
+
+    <section class="module" id="modul-9" data-title="Selbsttest">
+      <p class="eyebrow">Modul 9 · Leistungsüberprüfung</p>
+      <h2>Abschließender Kompetenzcheck</h2>
+      <p class="lead">Bearbeitet alle 25 Aufgaben zunächst ohne Unterlagen. Jede Aufgabe zählt einen Punkt. Nach der Auswertung erhaltet ihr das Ergebnis in Prozent, eine Rückmeldung nach Themenbereichen und zu jeder Aufgabe eine begründete Lösung.</p>
+      <div class="info warning"><strong>Fair arbeiten:</strong> Öffnet vor der ersten Auswertung keine Lösungen aus den anderen Modulen. Unbeantwortete Aufgaben zählen als nicht richtig.</div>
+      <div id="finalQuiz">
+        <fieldset class="quiz" data-topic="Dokumente" data-correct="a" data-explain="Die Fertigungszeichnung enthält die für Herstellung und Prüfung erforderlichen Einzelteilangaben."><legend>1. Welche Zeichnung ist für die Herstellung eines Einzelteils entscheidend?</legend><label><input type="radio" name="f1" value="a"> Fertigungszeichnung</label><label><input type="radio" name="f1" value="b"> Werbezeichnung</label><label><input type="radio" name="f1" value="c"> Organigramm</label><p class="feedback" aria-live="polite"></p></fieldset>
+        <fieldset class="quiz" data-topic="Dokumente" data-correct="b" data-explain="Positionsnummern verbinden das dargestellte Teil eindeutig mit seiner Zeile in der Stückliste."><legend>2. Welche Funktion hat eine Positionsnummer?</legend><label><input type="radio" name="f2" value="a"> Sie gibt die Bauteillänge an.</label><label><input type="radio" name="f2" value="b"> Sie ordnet ein Teil der Stückliste zu.</label><label><input type="radio" name="f2" value="c"> Sie ersetzt die Benennung.</label><p class="feedback" aria-live="polite"></p></fieldset>
+        <fieldset class="quiz" data-topic="Dokumente" data-correct="c" data-explain="Das Schriftfeld enthält unter anderem Benennung, Werkstoff, Maßstab und Zeichnungsidentifikation."><legend>3. Welche Angabe gehört in das Schriftfeld?</legend><label><input type="radio" name="f3" value="a"> Werbeslogan</label><label><input type="radio" name="f3" value="b"> Verkaufspreis</label><label><input type="radio" name="f3" value="c"> Werkstoff und Maßstab</label><p class="feedback" aria-live="polite"></p></fieldset>
+        <fieldset class="quiz" data-topic="Darstellung" data-correct="a" data-explain="Im Maßstab 1:5 wird eine 100-mm-Länge als 20 mm dargestellt; die Maßzahl bleibt 100."><legend>4. Wie lang wird ein Wirkmaß von 100 mm im Maßstab 1:5 dargestellt?</legend><label><input type="radio" name="f4" value="a"> 20 mm</label><label><input type="radio" name="f4" value="b"> 100 mm</label><label><input type="radio" name="f4" value="c"> 500 mm</label><p class="feedback" aria-live="polite"></p></fieldset>
+        <fieldset class="quiz" data-topic="Darstellung" data-correct="c" data-explain="Sichtbare Körperkanten und Umrisse werden als breite Volllinie dargestellt."><legend>5. Welche Linie kennzeichnet sichtbare Kanten?</legend><label><input type="radio" name="f5" value="a"> Schmale Strichlinie</label><label><input type="radio" name="f5" value="b"> Schmale Strichpunktlinie</label><label><input type="radio" name="f5" value="c"> Breite Volllinie</label><p class="feedback" aria-live="polite"></p></fieldset>
+        <fieldset class="quiz" data-topic="Darstellung" data-correct="b" data-explain="Mittel- und Symmetrielinien werden als schmale Strichpunktlinien gezeichnet."><legend>6. Welche Linie zeigt eine Bohrungsachse?</legend><label><input type="radio" name="f6" value="a"> Breite Volllinie</label><label><input type="radio" name="f6" value="b"> Schmale Strichpunktlinie</label><label><input type="radio" name="f6" value="c"> Breite Strichlinie</label><p class="feedback" aria-live="polite"></p></fieldset>
+        <fieldset class="quiz" data-topic="Darstellung" data-correct="a" data-explain="Die Vorderansicht soll möglichst viele Forminformationen zeigen oder der Gebrauchs-/Fertigungslage entsprechen."><legend>7. Welches Kriterium ist für die Vorderansicht wesentlich?</legend><label><input type="radio" name="f7" value="a"> Hoher Informationsgehalt</label><label><input type="radio" name="f7" value="b"> Möglichst viele verdeckte Kanten</label><label><input type="radio" name="f7" value="c"> Größte freie Papierfläche</label><p class="feedback" aria-live="polite"></p></fieldset>
+        <fieldset class="quiz" data-topic="Darstellung" data-correct="c" data-explain="Bei Projektionsmethode 1 liegt die Seitenansicht von links rechts neben der Vorderansicht."><legend>8. Wo liegt die Seitenansicht von links bei Projektionsmethode 1?</legend><label><input type="radio" name="f8" value="a"> Unter der Vorderansicht</label><label><input type="radio" name="f8" value="b"> Links neben der Vorderansicht</label><label><input type="radio" name="f8" value="c"> Rechts neben der Vorderansicht</label><p class="feedback" aria-live="polite"></p></fieldset>
+        <fieldset class="quiz" data-topic="Darstellung" data-correct="b" data-explain="In der hier verwendeten perspektivischen Darstellung werden keine Maße, Symmetrielinien und verdeckten Kanten eingetragen."><legend>9. Was wird in der räumlichen Darstellung weggelassen?</legend><label><input type="radio" name="f9" value="a"> Sichtbare Konturen</label><label><input type="radio" name="f9" value="b"> Bemaßung und verdeckte Kanten</label><label><input type="radio" name="f9" value="c"> Erkennbare Formelemente</label><p class="feedback" aria-live="polite"></p></fieldset>
+        <fieldset class="quiz" data-topic="Darstellung" data-correct="a" data-explain="Schraffiert wird nur Material, das von der gedachten Schnittebene durchtrennt wird."><legend>10. Welcher Bereich wird in einem Schnitt schraffiert?</legend><label><input type="radio" name="f10" value="a"> Durchtrenntes Material</label><label><input type="radio" name="f10" value="b"> Jeder Hohlraum</label><label><input type="radio" name="f10" value="c"> Nur verdeckte Kanten</label><p class="feedback" aria-live="polite"></p></fieldset>
+        <fieldset class="quiz" data-topic="Bemaßung" data-correct="b" data-explain="Jedes notwendige Maß wird genau einmal angegeben."><legend>11. Wie oft wird ein notwendiges Maß angegeben?</legend><label><input type="radio" name="f11" value="a"> In jeder Ansicht</label><label><input type="radio" name="f11" value="b"> Genau einmal</label><label><input type="radio" name="f11" value="c"> Nur nach der Fertigung</label><p class="feedback" aria-live="polite"></p></fieldset>
+        <fieldset class="quiz" data-topic="Bemaßung" data-correct="c" data-explain="Verdeckte Kanten werden nicht bemaßt; wählt eine sichtbare Ansicht oder einen Schnitt."><legend>12. Welche Regel gilt für verdeckte Kanten?</legend><label><input type="radio" name="f12" value="a"> Immer doppelt bemaßen</label><label><input type="radio" name="f12" value="b"> Mit breiter Linie zeichnen</label><label><input type="radio" name="f12" value="c"> Nicht bemaßen</label><p class="feedback" aria-live="polite"></p></fieldset>
+        <fieldset class="quiz" data-topic="Bemaßung" data-correct="a" data-explain="⌀ steht für Durchmesser."><legend>13. Was bedeutet ⌀12?</legend><label><input type="radio" name="f13" value="a"> Durchmesser 12 mm</label><label><input type="radio" name="f13" value="b"> Radius 12 mm</label><label><input type="radio" name="f13" value="c"> Tiefe 12 mm</label><p class="feedback" aria-live="polite"></p></fieldset>
+        <fieldset class="quiz" data-topic="Bemaßung" data-correct="b" data-explain="Die Größe einer Bohrung ist ein Formmaß; ihre Lage wird durch Lagemaße beschrieben."><legend>14. Zu welcher Maßart gehört der Bohrungsdurchmesser?</legend><label><input type="radio" name="f14" value="a"> Grundmaß</label><label><input type="radio" name="f14" value="b"> Formmaß</label><label><input type="radio" name="f14" value="c"> Lagemaß</label><p class="feedback" aria-live="polite"></p></fieldset>
+        <fieldset class="quiz" data-topic="Bemaßung" data-correct="c" data-explain="Funktionsmaße sichern das Zusammenwirken mit Nachbarteilen und haben Vorrang."><legend>15. Welcher Gesichtspunkt hat bei einem für die Funktion entscheidenden Maß Vorrang?</legend><label><input type="radio" name="f15" value="a"> Dekorative Anordnung</label><label><input type="radio" name="f15" value="b"> Möglichst lange Maßkette</label><label><input type="radio" name="f15" value="c"> Funktionsgerechte Bemaßung</label><p class="feedback" aria-live="polite"></p></fieldset>
+        <fieldset class="quiz" data-topic="Vertiefung" data-correct="a" data-explain="Eine Oberfläche soll nur so fein gefordert werden, wie es Funktion und Fertigung verlangen."><legend>16. Welcher Grundsatz gilt für Oberflächenanforderungen?</legend><label><input type="radio" name="f16" value="a"> So grob wie möglich, so fein wie nötig</label><label><input type="radio" name="f16" value="b"> Immer die feinste Oberfläche wählen</label><label><input type="radio" name="f16" value="c"> Oberflächen nie angeben</label><p class="feedback" aria-live="polite"></p></fieldset>
+        <fieldset class="quiz" data-topic="Vertiefung" data-correct="b" data-explain="Ra und Rz sind verschiedene Rauheitskenngrößen und nicht direkt umrechenbar."><legend>17. Welche Aussage zu Ra und Rz stimmt?</legend><label><input type="radio" name="f17" value="a"> Sie sind immer gleich.</label><label><input type="radio" name="f17" value="b"> Sie sind nicht direkt ineinander umrechenbar.</label><label><input type="radio" name="f17" value="c"> Beide bezeichnen Gewindesteigungen.</label><p class="feedback" aria-live="polite"></p></fieldset>
+        <fieldset class="quiz" data-topic="Vertiefung" data-correct="c" data-explain="Eine Maßtoleranz ist der zulässige Bereich zwischen den Grenzmaßen."><legend>18. Warum wird eine Maßtoleranz angegeben?</legend><label><input type="radio" name="f18" value="a"> Weil jedes Werkstück exakt ohne Abweichung entsteht</label><label><input type="radio" name="f18" value="b"> Um die Zeichnung farbiger zu machen</label><label><input type="radio" name="f18" value="c"> Um zulässige Fertigungsabweichungen festzulegen</label><p class="feedback" aria-live="polite"></p></fieldset>
+        <fieldset class="quiz" data-topic="Vertiefung" data-correct="a" data-explain="M10 × 1 bedeutet metrisches Gewinde, 10 mm Nenndurchmesser und 1 mm Steigung."><legend>19. Was bedeutet M10 × 1?</legend><label><input type="radio" name="f19" value="a"> Metrisch, Nenndurchmesser 10 mm, Steigung 1 mm</label><label><input type="radio" name="f19" value="b"> Zehn Schrauben von 1 mm Länge</label><label><input type="radio" name="f19" value="c"> Nenndurchmesser 1 mm</label><p class="feedback" aria-live="polite"></p></fieldset>
+        <fieldset class="quiz" data-topic="Lesen" data-correct="b" data-explain="Der sichere Leseweg beginnt mit Dokumentart und Schriftfeld, danach folgen Geometrie, Maße und Fertigungsangaben."><legend>20. Was ist der sinnvollste erste Schritt beim Zeichnungslesen?</legend><label><input type="radio" name="f20" value="a"> Eine einzelne Maßzahl auswählen</label><label><input type="radio" name="f20" value="b"> Dokumentart und Schriftfeld erfassen</label><label><input type="radio" name="f20" value="c"> Sofort eine Fertigungsmaschine auswählen</label><p class="feedback" aria-live="polite"></p></fieldset>
+        <fieldset class="quiz" data-topic="Darstellung" data-correct="a" data-explain="Vorder- und Draufsicht enthalten dieselbe Breite; Vorder- und Seitenansicht dieselbe Höhe."><legend>21. Welche Abmessung ist Vorder- und Draufsicht gemeinsam?</legend><label><input type="radio" name="f21" value="a"> Breite</label><label><input type="radio" name="f21" value="b"> Höhe</label><label><input type="radio" name="f21" value="c"> Nur die Tiefe</label><p class="feedback" aria-live="polite"></p></fieldset>
+        <fieldset class="quiz" data-topic="Darstellung" data-correct="b" data-explain="Bei der Kabinettprojektion bleibt die Vorderfläche in wahrer Form; die Tiefenkanten werden halbiert."><legend>22. Was kennzeichnet die Kabinettprojektion?</legend><label><input type="radio" name="f22" value="a"> Die Vorderfläche wird halbiert.</label><label><input type="radio" name="f22" value="b"> Die Vorderfläche bleibt unverzerrt und die Tiefe wird halbiert.</label><label><input type="radio" name="f22" value="c"> Verdeckte Kanten werden besonders breit gezeichnet.</label><p class="feedback" aria-live="polite"></p></fieldset>
+        <fieldset class="quiz" data-topic="Darstellung" data-correct="c" data-explain="Beim Halbschnitt trennt die Mittellinie die Ansichtshälfte von der Schnitthälfte."><legend>23. Was bildet beim Halbschnitt die Grenze zwischen Ansicht und Schnitt?</legend><label><input type="radio" name="f23" value="a"> Eine breite Volllinie</label><label><input type="radio" name="f23" value="b"> Eine Freihandlinie</label><label><input type="radio" name="f23" value="c"> Die Mittellinie</label><p class="feedback" aria-live="polite"></p></fieldset>
+        <fieldset class="quiz" data-topic="Darstellung" data-correct="a" data-explain="Die Unterbrechung verkürzt nur die Darstellung. Die Maßzahl gibt weiterhin die vollständige wirkliche Länge an."><legend>24. Was gilt für das Längenmaß einer unterbrochen dargestellten Welle?</legend><label><input type="radio" name="f24" value="a"> Es gibt die vollständige wirkliche Länge an.</label><label><input type="radio" name="f24" value="b"> Es gibt nur den sichtbaren Rest an.</label><label><input type="radio" name="f24" value="c"> Es darf kein Längenmaß eingetragen werden.</label><p class="feedback" aria-live="polite"></p></fieldset>
+        <fieldset class="quiz" data-topic="Bemaßung" data-correct="b" data-explain="Direkte Maße von einer gemeinsamen Bezugsebene vermeiden die Addition mehrerer Einzelabweichungen."><legend>25. Warum ist eine Bezugsbemaßung für Funktionslagen oft günstiger als eine lange Maßkette?</legend><label><input type="radio" name="f25" value="a"> Sie benötigt keine Maßhilfslinien.</label><label><input type="radio" name="f25" value="b"> Sie vermeidet die Addition mehrerer Einzelabweichungen.</label><label><input type="radio" name="f25" value="c"> Sie erlaubt doppelte Maße.</label><p class="feedback" aria-live="polite"></p></fieldset>
+      </div>
+      <button class="btn" id="gradeFinal" type="button">Leistungsüberprüfung auswerten</button>
+      <div class="score-box" id="finalScore" aria-live="polite"><strong class="big">Noch nicht ausgewertet</strong>Bearbeitet alle 25 Aufgaben.</div>
+      <div class="card" id="topicScore" aria-live="polite"><strong>Teilbereiche:</strong> Die Auswertung erscheint nach dem Test.</div>
+
+      <h3>Ich-kann-Selbsteinschätzung</h3>
+      <p>Setzt den Haken nur, wenn ihr die Aussage ohne Hilfe erfüllen könnt. Nutzt anschließend die Prozent- und Themenauswertung, um passende Module zu wiederholen.</p>
+      <div class="checklist">
+        <label><input type="checkbox"> Ich kann technische Dokumente und Schriftfeldangaben unterscheiden.</label>
+        <label><input type="checkbox"> Ich kann Maßstab, Linienarten und Ansichten sicher anwenden.</label>
+        <label><input type="checkbox"> Ich kann Projektionsmethode 1 und Schnittdarstellungen erklären.</label>
+        <label><input type="checkbox"> Ich kann vollständig, eindeutig und ohne Doppelmaße bemaßen.</label>
+        <label><input type="checkbox"> Ich kann Oberflächen-, Toleranz- und Gewindeangaben grundlegend einordnen.</label>
+        <label><input type="checkbox"> Ich kann eine Zeichnung systematisch lesen, prüfen und verbessern.</label>
+      </div>
+
+      <h3>Ist meine technische Zeichnung eindeutig und fertigungsgerecht?</h3>
+      <div class="checklist">
+        <label><input type="checkbox"> Ist die Zeichnungsart beziehungsweise der Auftrag klar?</label>
+        <label><input type="checkbox"> Sind Benennung, Werkstoff, Maßstab und Zeichnungsdaten vollständig?</label>
+        <label><input type="checkbox"> Ist das Bauteil mit möglichst wenigen, aber ausreichenden Ansichten eindeutig dargestellt?</label>
+        <label><input type="checkbox"> Zeigt die Vorderansicht die wichtigsten Formen oder die Gebrauchs-/Fertigungslage?</label>
+        <label><input type="checkbox"> Sind die Ansichten nach der verwendeten Projektionsmethode richtig angeordnet?</label>
+        <label><input type="checkbox"> Sind sichtbare, verdeckte und symmetrische Elemente mit passenden Linienarten gezeichnet?</label>
+        <label><input type="checkbox"> Sind alle notwendigen Grund-, Form- und Lagemaße vorhanden?</label>
+        <label><input type="checkbox"> Ist jedes Maß nur einmal angegeben und nicht an verdeckten Kanten?</label>
+        <label><input type="checkbox"> Sind ⌀, R und weitere Symbole passend verwendet?</label>
+        <label><input type="checkbox"> Sind erforderliche Oberflächen-, Toleranz-, Gewinde- oder Montageangaben vorhanden?</label>
+        <label><input type="checkbox"> Sind alle Angaben widerspruchsfrei, lesbar und prüfbar?</label>
+        <label><input type="checkbox"> Könnte eine andere Person das Bauteil ohne Rückfrage modellieren, fertigen und prüfen?</label>
+      </div>
+      <div class="module-actions"><button class="btn secondary prev" type="button">Zurück</button><button class="btn secondary" id="printSummary" type="button">Übersicht drucken</button><button class="btn success complete" type="button">Kurs abschließen</button></div>
+    </section>
+  </main>
+
+  <footer>
+    <p><strong>Nachschlagewerke:</strong> „1. Infos Technisches Zeichnen“ (Buch-S. 484–499; im PDF sind mehrere Doppelseiten doppelt enthalten) und „2. TK Metall- und Bautechnik TB“. Seiten im Tabellenbuch können je nach Ausgabe abweichen; deshalb nennen die Rechercheaufträge zusätzlich eindeutige Stichworte. Alle technischen Abbildungen dieser HTML-Datei sind neu erstellte Inline-SVGs. Normausgaben sind dort bewusst nicht ergänzt, wo die beiden Nachschlagewerke keine eindeutige Ausgabe belegen.</p>
+    <p>Die Datei arbeitet vollständig offline. Antworten und Lernfortschritt werden ausschließlich lokal im jeweiligen Browser gespeichert und nicht übertragen.</p>
+  </footer>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var modules = Array.prototype.slice.call(document.querySelectorAll(".module"));
+      var nav = document.getElementById("moduleNav");
+      var progress = document.getElementById("progressBar");
+      var progressText = document.getElementById("progressText");
+      var completed = new Set();
+      var workData = {};
+
+      try {
+        JSON.parse(localStorage.getItem("tzCompletedV2") || "[]").forEach(function (id) {
+          if (document.getElementById(id)) completed.add(id);
+        });
+        workData = JSON.parse(localStorage.getItem("tzWorkV2") || "{}");
+      } catch (error) {
+        completed = new Set();
+        workData = {};
+      }
+
+      progress.max = modules.length;
+      modules.forEach(function (module, index) {
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = "nav-button";
+        button.textContent = (index + 1) + " " + module.dataset.title;
+        button.addEventListener("click", function () { showModule(index); });
+        nav.appendChild(button);
+      });
+
+      function saveProgress() {
+        try { localStorage.setItem("tzCompletedV2", JSON.stringify(Array.from(completed))); } catch (error) {}
+        progress.value = completed.size;
+        progressText.textContent = completed.size + " von " + modules.length + " Modulen abgeschlossen";
+      }
+
+      function showModule(index) {
+        if (index < 0 || index >= modules.length) return;
+        modules.forEach(function (module, i) {
+          module.classList.toggle("active", i === index);
+          nav.children[i].setAttribute("aria-current", i === index ? "page" : "false");
+        });
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        var heading = modules[index].querySelector("h2");
+        if (heading) heading.focus({ preventScroll: true });
+      }
+
+      modules.forEach(function (module, index) {
+        var heading = module.querySelector("h2");
+        if (heading) heading.setAttribute("tabindex", "-1");
+        var completeButton = module.querySelector(".complete");
+        if (completeButton) {
+          completeButton.addEventListener("click", function () {
+            completed.add(module.id);
+            saveProgress();
+            if (index < modules.length - 1) showModule(index + 1);
+            else completeButton.textContent = "Kurs abgeschlossen";
+          });
+        }
+        var prevButton = module.querySelector(".prev");
+        if (prevButton) prevButton.addEventListener("click", function () { showModule(index - 1); });
+      });
+
+      document.querySelectorAll("textarea[data-save]").forEach(function (area) {
+        area.value = workData[area.dataset.save] || "";
+        area.addEventListener("input", function () {
+          workData[area.dataset.save] = area.value;
+          try { localStorage.setItem("tzWorkV2", JSON.stringify(workData)); } catch (error) {}
+        });
+      });
+
+      function gradeQuiz(quiz) {
+        var chosen = quiz.querySelector("input[type=radio]:checked");
+        var feedback = quiz.querySelector(".feedback");
+        quiz.classList.remove("answered-ok", "answered-bad");
+        if (!chosen) {
+          feedback.textContent = "Noch unbeantwortet. Wählt zuerst eine Antwort.";
+          feedback.className = "feedback bad";
+          quiz.classList.add("answered-bad");
+          return false;
+        }
+        var ok = chosen.value === quiz.dataset.correct;
+        feedback.textContent = (ok ? "Richtig. " : "Noch nicht richtig. ") + quiz.dataset.explain;
+        feedback.className = "feedback " + (ok ? "ok" : "bad");
+        quiz.classList.add(ok ? "answered-ok" : "answered-bad");
+        return ok;
+      }
+
+      document.querySelectorAll("[data-grade-section]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          var section = button.closest(".module");
+          var quizzes = Array.prototype.slice.call(section.querySelectorAll(".quiz")).filter(function (quiz) {
+            return !quiz.closest("#finalQuiz");
+          });
+          var correct = quizzes.reduce(function (sum, quiz) { return sum + (gradeQuiz(quiz) ? 1 : 0); }, 0);
+          var score = button.nextElementSibling;
+          if (score && score.classList.contains("section-score")) {
+            score.textContent = correct + " von " + quizzes.length + " richtig";
+          }
+        });
+      });
+
+      var hotspotText = {
+        body: "<strong>Ansicht:</strong> Sie beschreibt die geometrische Form. Mehrere Ansichten werden gedanklich zu einem räumlichen Bauteil verbunden.",
+        dims: "<strong>Bemaßung:</strong> Maßlinien, Maßhilfslinien, Maßpfeile und Maßzahlen legen Größe und Lage der Formelemente fest.",
+        title: "<strong>Schriftfeld:</strong> Es enthält Identifikations- und Zeichnungsangaben, zum Beispiel Benennung, Werkstoff, Maßstab und Zeichnungsnummer.",
+        frame: "<strong>Zeichnungsrahmen:</strong> Er begrenzt die nutzbare Zeichenfläche und strukturiert das Dokument."
+      };
+      document.querySelectorAll("[data-hotspot]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          document.querySelectorAll("[data-hotspot]").forEach(function (item) { item.classList.remove("active"); });
+          button.classList.add("active");
+          document.getElementById("hotspotInfo").innerHTML = hotspotText[button.dataset.hotspot];
+        });
+      });
+
+      function calculateScale() {
+        var real = Number(document.getElementById("realLength").value);
+        var parts = document.getElementById("scaleSelect").value.split(":").map(Number);
+        var output = document.getElementById("scaleResult");
+        if (!Number.isFinite(real) || real < 0) {
+          output.textContent = "Bitte gebt ein gültiges Wirkmaß ein.";
+          return;
+        }
+        var drawn = real * parts[0] / parts[1];
+        output.textContent = real.toLocaleString("de-DE") + " mm im Maßstab " + parts.join(":") + " werden " + drawn.toLocaleString("de-DE", { maximumFractionDigits: 2 }) + " mm groß dargestellt. Die eingetragene Maßzahl bleibt " + real.toLocaleString("de-DE") + ".";
+      }
+      document.getElementById("calcScale").addEventListener("click", calculateScale);
+      document.getElementById("scaleSelect").addEventListener("change", calculateScale);
+
+      document.querySelectorAll("[data-view-toggle]").forEach(function (box) {
+        box.addEventListener("change", function () {
+          var group = document.getElementById("view-" + box.dataset.viewToggle);
+          if (group) group.style.display = box.checked ? "" : "none";
+        });
+      });
+      document.getElementById("hiddenToggle").addEventListener("change", function (event) {
+        document.querySelectorAll(".hidden-lines").forEach(function (group) {
+          group.style.display = event.target.checked ? "" : "none";
+        });
+      });
+      document.getElementById("lineHiddenToggle").addEventListener("change", function (event) {
+        document.querySelectorAll(".hidden-demo").forEach(function (group) {
+          group.style.display = event.target.checked ? "" : "none";
+        });
+      });
+
+      function showDimStage(value) {
+        document.querySelectorAll(".dim-stage").forEach(function (stage) {
+          stage.style.display = value === "all" || Number(stage.dataset.stage) <= Number(value) ? "" : "none";
+        });
+      }
+      document.querySelectorAll("[data-dim-stage]").forEach(function (button) {
+        button.addEventListener("click", function () { showDimStage(button.dataset.dimStage); });
+      });
+      showDimStage("all");
+
+      document.getElementById("gradeFinal").addEventListener("click", function () {
+        var finalQuizzes = Array.prototype.slice.call(document.querySelectorAll("#finalQuiz .quiz"));
+        var byTopic = {};
+        var unanswered = 0;
+        var correct = 0;
+        finalQuizzes.forEach(function (quiz) {
+          var topic = quiz.dataset.topic || "Weitere";
+          if (!byTopic[topic]) byTopic[topic] = { correct: 0, total: 0 };
+          byTopic[topic].total += 1;
+          if (!quiz.querySelector("input[type=radio]:checked")) unanswered += 1;
+          if (gradeQuiz(quiz)) {
+            correct += 1;
+            byTopic[topic].correct += 1;
+          }
+        });
+        var percent = Math.round(correct / finalQuizzes.length * 100);
+        var message = percent >= 85 ? "Sehr sicher: Ihr könnt mit einer eigenen CAD- und Fertigungsaufgabe weiterarbeiten."
+          : percent >= 70 ? "Gute Grundlage: Wiederholt die schwächeren Teilbereiche."
+          : percent >= 50 ? "Teilweise sicher: Arbeitet die betroffenen Module erneut durch."
+          : "Grundlagen noch unsicher: Beginnt bei den Modulen mit der niedrigsten Teilbereichsquote.";
+        document.getElementById("finalScore").innerHTML = "<strong class=\"big\">" + percent + " %</strong>" + correct + " von " + finalQuizzes.length + " Punkten. " + (unanswered ? unanswered + " Aufgabe(n) unbeantwortet. " : "") + message;
+        var topicLines = Object.keys(byTopic).map(function (topic) {
+          var item = byTopic[topic];
+          return "<li><strong>" + topic + ":</strong> " + item.correct + " / " + item.total + " (" + Math.round(item.correct / item.total * 100) + " %)</li>";
+        }).join("");
+        document.getElementById("topicScore").innerHTML = "<strong>Teilbereiche:</strong><ul>" + topicLines + "</ul>";
+      });
+
+      document.getElementById("printSummary").addEventListener("click", function () { window.print(); });
+      document.getElementById("resetCourse").addEventListener("click", function () {
+        if (!window.confirm("Soll der lokal gespeicherte Lernfortschritt mit allen Eingaben zurückgesetzt werden?")) return;
+        completed.clear();
+        workData = {};
+        try {
+          localStorage.removeItem("tzCompletedV2");
+          localStorage.removeItem("tzWorkV2");
+        } catch (error) {}
+        document.querySelectorAll("input").forEach(function (input) {
+          if (input.type === "radio" || input.type === "checkbox") input.checked = false;
+        });
+        document.querySelectorAll("textarea[data-save]").forEach(function (area) { area.value = ""; });
+        document.querySelectorAll(".feedback").forEach(function (item) { item.textContent = ""; item.className = "feedback"; });
+        document.querySelectorAll(".quiz").forEach(function (quiz) { quiz.classList.remove("answered-ok", "answered-bad"); });
+        document.querySelectorAll(".section-score").forEach(function (score) { score.textContent = ""; });
+        document.querySelectorAll("details").forEach(function (detail) { detail.open = false; });
+        document.getElementById("realLength").value = "80";
+        document.getElementById("scaleSelect").value = "1:1";
+        calculateScale();
+        document.querySelectorAll("[data-view-toggle], #hiddenToggle, #lineHiddenToggle").forEach(function (box) {
+          box.checked = true;
+          box.dispatchEvent(new Event("change"));
+        });
+        document.getElementById("finalScore").innerHTML = "<strong class=\"big\">Noch nicht ausgewertet</strong>Bearbeitet alle 25 Aufgaben.";
+        document.getElementById("topicScore").innerHTML = "<strong>Teilbereiche:</strong> Die Auswertung erscheint nach dem Test.";
+        saveProgress();
+        showModule(0);
+      });
+
+      calculateScale();
+      saveProgress();
+      showModule(0);
+    }());
+  </script>
+</body>
+</html>
